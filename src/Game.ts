@@ -16,25 +16,25 @@ export class Game {
     this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
 
     window.addEventListener('keydown', (event) => {
-      if (this.debug) console.log('keydown : ' + event.key);
-      let key = event.key;
+      let key = event.charCode || event.which || event.keyCode;
+      if (this.debug) console.log('keydown : ' + key);
       switch (key) {
-        case 'ArrowUp':
+        case 38:
           event.preventDefault();
           if (this.player.moveUp(this.map))
             this.drawFrame();
           break;
-        case 'ArrowDown':
+        case 40:
           event.preventDefault();
           if (this.player.moveDown(this.map))
             this.drawFrame();
           break;
-        case 'ArrowLeft':
+        case 37:
           event.preventDefault();
           if (this.player.moveLeft(this.map))
             this.drawFrame();
           break;
-        case 'ArrowRight':
+        case 39:
           event.preventDefault();
           if (this.player.moveRight(this.map))
             this.drawFrame();
