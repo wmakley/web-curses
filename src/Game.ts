@@ -2,6 +2,7 @@ import { WebCurses } from './WebCurses';
 import { Entity } from './Entity';
 import { Map } from './Map';
 import { Tile } from './Tile';
+import * as Keyboard from './Keyboard';
 
 export class Game {
   private screen: WebCurses;
@@ -16,25 +17,26 @@ export class Game {
     this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
 
     window.addEventListener('keydown', (event) => {
-      let key = event.charCode || event.which || event.keyCode;
-      if (this.debug) console.log('keydown : ' + key);
+      let key = Keyboard.getKey(event);
+      if (key === null) return;
+      if (this.debug) console.log("keydown : '" + key + "'");
       switch (key) {
-        case 38:
+        case 'ArrowUp':
           event.preventDefault();
           if (this.player.moveUp(this.map))
             this.drawFrame();
           break;
-        case 40:
+        case 'ArrowDown':
           event.preventDefault();
           if (this.player.moveDown(this.map))
             this.drawFrame();
           break;
-        case 37:
+        case 'ArrowLeft':
           event.preventDefault();
           if (this.player.moveLeft(this.map))
             this.drawFrame();
           break;
-        case 39:
+        case 'ArrowRight':
           event.preventDefault();
           if (this.player.moveRight(this.map))
             this.drawFrame();
