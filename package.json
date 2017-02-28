@@ -1,0 +1,29 @@
+{
+  "name": "web-curses",
+  "version": "1.0.0",
+  "description": "canvas-based roguelike",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmakley/web-curses.git"
+  },
+  "keywords": [
+    "roguelike",
+    "canvas",
+    "html5"
+  ],
+  "author": "William Makley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wmakley/web-curses/issues"
+  },
+  "homepage": "https://github.com/wmakley/web-curses#readme",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.0.8",
+    "source-map-loader": "^0.1.6",
+    "typescript": "^2.2.1"
+  }
+}
