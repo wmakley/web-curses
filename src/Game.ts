@@ -14,7 +14,8 @@ export class Game {
 
   constructor(private canvas: HTMLCanvasElement, public readonly fontSize: number) {
     this.debug = canvas.dataset['debug'] === 'true';
-    this.screen = new WebCurses(canvas, fontSize);
+    let fontFace = canvas.dataset['fontFace'];
+    this.screen = new WebCurses(canvas, fontSize, fontFace);
     if (this.debug) console.log('font size: ' + fontSize + '; ' + this.screen.horizontalTiles + ' tiles x ' + this.screen.verticalTiles + ' tiles');
     this.player = new Entity({ x: 10, y: 10 }, '@', '#FFFFFF');
     this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);

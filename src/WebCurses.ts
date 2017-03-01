@@ -7,7 +7,10 @@ export class WebCurses {
   private fontXCorrection: number
   private fontYCorrection: number
 
-  constructor(private canvas: HTMLCanvasElement, public readonly fontSize: number) {
+  constructor(private canvas: HTMLCanvasElement,
+    public readonly fontSize: number,
+    public readonly fontFace?: string)
+  {
     this.ctx = canvas.getContext('2d');
     this.widthInPixels = canvas.width;
     this.heightInPixels = canvas.height;
@@ -23,7 +26,14 @@ export class WebCurses {
       this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
-    this.ctx.font = this.fontSize + 'px Menlo';
+    let font = this.fontSize + 'px';
+    if (typeof fontFace === 'string' && fontFace !== '') {
+      font = font + ' ' + fontFace + ', monospace';
+    }
+    else {
+      font = font + ' monospace';
+    }
+    this.ctx.font = font;
     this.fontXCorrection = 2.5;
     this.fontYCorrection = -2;
 
