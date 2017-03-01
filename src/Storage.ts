@@ -15,13 +15,13 @@ export class Storage {
   }
 
   public saveEntity(name: string, entity: Entity) {
-    return this.saveObject('entity_' + name, entity);
+    return this.saveObject('entity_' + name, Entity.serialize(entity));
   }
 
   public loadEntity(name: string) {
     let data = this.loadObject('entity_' + name);
     if (!data) return data;
-    return new Entity(data.pos, data.char, data.color);
+    return Entity.deserialize(data);
   }
 
   private saveObject(name: string, object: Object) {

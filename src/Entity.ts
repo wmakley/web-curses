@@ -44,4 +44,18 @@ export class Entity {
     };
     return new Entity(pos, this.char, this.color);
   }
+
+  public static serialize(entity: Entity) {
+    return entity;
+  }
+
+  public static deserialize(data: any) {
+    if (typeof data.pos !== 'object' ||
+      typeof data.char !== 'string' ||
+      typeof data.color !== 'string') {
+      throw 'bad entity data: ' + data;
+    }
+
+    return new Entity(data.pos, data.char, data.color);
+  }
 }
