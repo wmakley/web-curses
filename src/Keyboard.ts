@@ -2,6 +2,7 @@
  * keyCode to key mappings
  */
 export var CODES: { [code: number]: string; } = {
+  13: 'Enter',
   27: 'Escape',
   32: ' ',
   37: 'ArrowLeft',
@@ -19,6 +20,6 @@ export function getKey(event: KeyboardEvent) {
   }
 
   let code = event.keyCode || event.which || event.charCode;
-
+  if (!code) return null;
   return CODES[code] || null;
 }
