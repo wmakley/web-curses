@@ -24,6 +24,7 @@ export class Map {
   }
 
   public tileAt(x: number, y: number) {
+    if (x < 0 || y < 0 || x >= this.width || y >= this.width) return null;
     return this.tiles[this.width * y + x];
   }
 
@@ -37,6 +38,7 @@ export class Map {
   }
 
   public isPassable(x: number, y: number) {
+    if (x < 0 || y < 0 || x >= this.width || y >= this.width) return false;
     let tile = this.tileAt(x, y);
     return tile.type.passable;
   }
