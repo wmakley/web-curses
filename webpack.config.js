@@ -23,7 +23,7 @@ module.exports = {
     },
 
     devServer: {
-      // contentBase: path.join(__dirname, "static"),
+      contentBase: path.join(__dirname, "static"),
       port: 9000,
       publicPath: "/dist/",
       overlay: {
