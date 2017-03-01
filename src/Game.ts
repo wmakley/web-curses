@@ -3,6 +3,8 @@ import { Entity } from './Entity';
 import { Map } from './Map';
 import { Tile } from './Tile';
 import * as Keyboard from './Keyboard';
+import { EntityCommand, MovementCommand, Direction } from './Command';
+import { Storage } from './Storage';
 
 export class Game {
   public debug: boolean;
@@ -11,51 +13,74 @@ export class Game {
 
   private map: Map;
   private player: Entity;
+  private storage: Storage;
 
-  constructor(private canvas: HTMLCanvasElement, public readonly fontSize: number) {
+  constructor(
+    private canvas: HTMLCanvasElement,
+    public readonly fontSize: number,
+    public readonly fontFace?: string
+  ) {
     this.debug = canvas.dataset['debug'] === 'true';
-    let fontFace = canvas.dataset['fontFace'];
     this.screen = new WebCurses(canvas, fontSize, fontFace);
-    if (this.debug) console.log('font size: ' + fontSize + '; ' + this.screen.horizontalTiles + ' tiles x ' + this.screen.verticalTiles + ' tiles');
-    this.player = new Entity({ x: 10, y: 10 }, '@', '#FFFFFF');
-    this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
+    if (this.debug) console.log('Font: ' + fontSize + 'px ' + (fontFace || '') + '; ' + this.screen.horizontalTiles + ' tiles x ' + this.screen.verticalTiles + ' tiles');
+
+    this.storage = new Storage();
+    if (!this.loadGame()) {
+      this.player = new Entity({ x: 10, y: 10 }, '@', '#FFFFFF');
+      this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
+      this.drawFrame();
+    }
+
+    const moveUpCommand = new MovementCommand(Direction.Up);
+    const moveDownCommand = new MovementCommand(Direction.Down);
+    const moveLeftCommand = new MovementCommand(Direction.Left);
+    const moveRightCommand = new MovementCommand(Direction.Right);
+
+    let playerCommandMappings: { [key: string]: EntityCommand } = {
+      'ArrowUp': moveUpCommand,
+      'k': moveUpCommand,
+      'ArrowDown': moveDownCommand,
+      'j': moveDownCommand,
+      'ArrowLeft': moveLeftCommand,
+      'h': moveLeftCommand,
+      'ArrowRight': moveRightCommand,
+      'l': moveRightCommand
+    };
 
     window.addEventListener('keydown', (event) => {
       let key = Keyboard.getKey(event);
       if (key === null) return;
       if (this.debug) console.log("keydown : '" + key + "'");
-      switch (key) {
-        case 'ArrowUp':
-        case 'k':
-          event.preventDefault();
-          if (this.player.moveUp(this.map))
-            this.drawFrame();
-          break;
-        case 'ArrowDown':
-        case 'j':
-          event.preventDefault();
-          if (this.player.moveDown(this.map))
-            this.drawFrame();
-          break;
-        case 'ArrowLeft':
-        case 'h':
-          event.preventDefault();
-          if (this.player.moveLeft(this.map))
-            this.drawFrame();
-          break;
-        case 'ArrowRight':
-        case 'l':
-          event.preventDefault();
-          if (this.player.moveRight(this.map))
-            this.drawFrame();
-          break;
+      let command = playerCommandMappings[key];
+      if (command) {
+        event.preventDefault();
+        this.player = command.execute(this.player, this.map);
+        this.drawFrame();
       }
     });
-
-    this.drawFrame();
   }
 
-  private drawFrame() {
+  public saveGame() {
+    this.storage.saveMap('main', this.map);
+    this.storage.saveEntity('player', this.player);
+  }
+
+  public loadGame() {
+    let player = this.storage.loadEntity('player');
+    if (!player) return false;
+    let map = this.storage.loadMap('main');
+    if (!map) return false;
+    this.player = player;
+    this.map = map;
+    this.drawFrame();
+    return true;
+  }
+
+  public deleteGame() {
+    return this.storage.clear();
+  }
+
+  public drawFrame() {
     this.drawBackground();
     this.drawEntity(this.player);
     this.screen.putChar('D', 12, 13, '#FF0000', '#000000');

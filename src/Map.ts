@@ -1,11 +1,11 @@
-import { Tile } from './Tile';
+import * as Tile from './Tile';
 import { Wall, Floor } from './TileType';
 
 /**
  * Basically just a container of a bunch of tiles.
  */
 export class Map {
-  public tiles: Array<Tile>;
+  protected tiles: Array<Tile.Tile>;
 
   constructor(public readonly width: number, public readonly height: number) {
     this.tiles = [];
@@ -27,7 +27,7 @@ export class Map {
     return this.tiles[this.width * y + x];
   }
 
-  public eachTile(callback: (x: number, y: number, tile: Tile) => void) {
+  public eachTile(callback: (x: number, y: number, tile: Tile.Tile) => void) {
     var x, y, tile, result;
     for (x = 0; x < this.width; x++) {
       for (y = 0; y < this.height; y++) {
@@ -39,5 +39,31 @@ export class Map {
   public isPassable(x: number, y: number) {
     let tile = this.tileAt(x, y);
     return tile.type.passable;
+  }
+
+  public static serialize(map: Map) {
+    return {
+      width: map.width,
+      height: map.height,
+      tiles: map.tiles.map((tile) => {
+        return Tile.serialize(tile);
+      })
+    };
+  }
+
+  public static deserialize(data: any) {
+    let tiles = data.tiles;
+    let width = data.width;
+    let height = data.height;
+    if (!tiles || typeof tiles !== 'object' || typeof width !== 'number' || typeof height !== 'number' || typeof tiles.length !== 'number') {
+      throw 'bad data';
+    }
+    let deserializedTiles = <Array<Tile.Tile>>[];
+    for (let i = 0; i < tiles.length; i++) {
+      deserializedTiles.push(Tile.deserialize(tiles[i]));
+    }
+    let map = new Map(data.width, data.height);
+    map.tiles = deserializedTiles;
+    return map;
   }
 }
