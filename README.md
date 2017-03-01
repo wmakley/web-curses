@@ -2,8 +2,7 @@
 
 Setup:
 
-    npm install webpack -g
     npm install
-    webpack
+    npm run server
 
-Open index.html
+Open http://localhost:9000
