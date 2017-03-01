@@ -7,9 +7,9 @@ export class Map {
   constructor(public readonly width: number, public readonly height: number) {
     this.tiles = [];
     var x, y, tile;
-    for (x = 0; x < width; x++) {
-      for (y = 0; y < height; y++) {
-        if (x === 5) {
+    for (y = 0; y < height; y++) {
+      for (x = 0; x < width; x++) {
+        if (y === 4) {
           tile = { type: Wall }
         }
         else {
@@ -21,15 +21,14 @@ export class Map {
   }
 
   public tileAt(x: number, y: number) {
-    return this.tiles[x * y];
+    return this.tiles[this.width * y + x];
   }
 
   public eachTile(callback: (x: number, y: number, tile: Tile) => void) {
     var x, y, tile, result;
     for (x = 0; x < this.width; x++) {
       for (y = 0; y < this.height; y++) {
-        tile = this.tiles[x * y];
-        callback(x, y, tile);
+        callback(x, y, this.tileAt(x, y));
       }
     }
   }
