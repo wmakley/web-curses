@@ -53,12 +53,16 @@ export class Map {
     };
   }
 
+  /**
+   * Reconnect tiles to their type classes and turn raw json back into a Map instance.
+   * @param data
+   */
   public static deserialize(data: any) {
     let tiles = data.tiles;
     let width = data.width;
     let height = data.height;
     if (!tiles || typeof tiles !== 'object' || typeof width !== 'number' || typeof height !== 'number' || typeof tiles.length !== 'number') {
-      throw 'bad data';
+      throw 'bad map data';
     }
     let deserializedTiles = <Array<Tile.Tile>>[];
     for (let i = 0; i < tiles.length; i++) {
