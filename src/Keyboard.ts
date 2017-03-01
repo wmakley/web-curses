@@ -1,14 +1,18 @@
 /**
  * keyCode to key mappings
  */
-export var CODES: { [code: number]: string; } = {
+export let CODES: { [code: number]: string; } = {
   13: 'Enter',
   27: 'Escape',
   32: ' ',
   37: 'ArrowLeft',
   38: 'ArrowUp',
   39: 'ArrowRight',
-  40: 'ArrowDown'
+  40: 'ArrowDown',
+  72: 'h',
+  74: 'j',
+  75: 'k',
+  76: 'l'
 }
 
 /**

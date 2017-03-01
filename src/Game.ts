@@ -5,10 +5,12 @@ import { Tile } from './Tile';
 import * as Keyboard from './Keyboard';
 
 export class Game {
-  private screen: WebCurses;
-  private player: Entity;
-  private map: Map;
   public debug: boolean;
+
+  private screen: WebCurses;
+
+  private map: Map;
+  private player: Entity;
 
   constructor(private canvas: HTMLCanvasElement, public readonly fontSize: number) {
     this.debug = canvas.dataset['debug'] === 'true';
@@ -16,7 +18,6 @@ export class Game {
     if (this.debug) console.log('font size: ' + fontSize + '; ' + this.screen.horizontalTiles + ' tiles x ' + this.screen.verticalTiles + ' tiles');
     this.player = new Entity({ x: 10, y: 10 }, '@', '#FFFFFF');
     this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
-    if (this.debug) console.log()
 
     window.addEventListener('keydown', (event) => {
       let key = Keyboard.getKey(event);
@@ -24,21 +25,25 @@ export class Game {
       if (this.debug) console.log("keydown : '" + key + "'");
       switch (key) {
         case 'ArrowUp':
+        case 'k':
           event.preventDefault();
           if (this.player.moveUp(this.map))
             this.drawFrame();
           break;
         case 'ArrowDown':
+        case 'j':
           event.preventDefault();
           if (this.player.moveDown(this.map))
             this.drawFrame();
           break;
         case 'ArrowLeft':
+        case 'h':
           event.preventDefault();
           if (this.player.moveLeft(this.map))
             this.drawFrame();
           break;
         case 'ArrowRight':
+        case 'l':
           event.preventDefault();
           if (this.player.moveRight(this.map))
             this.drawFrame();
@@ -52,6 +57,7 @@ export class Game {
   private drawFrame() {
     this.drawBackground();
     this.drawEntity(this.player);
+    this.screen.putChar('D', 12, 13, '#FF0000', '#000000');
   }
 
   private drawBackground() {

@@ -1,6 +1,9 @@
 import { Tile } from './Tile';
 import { Wall, Floor } from './TileType';
 
+/**
+ * Basically just a container of a bunch of tiles.
+ */
 export class Map {
   public tiles: Array<Tile>;
 
