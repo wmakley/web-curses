@@ -1,12 +1,13 @@
 import { Point } from './Point'
 import { Map } from './Map'
 import { Direction } from './Command'
+import * as ActorClass from './ActorClass'
+
 
 export class Actor {
   constructor(
-    public pos: Point,
-    public char: string,
-    public color: string
+    public readonly actorClass: ActorClass.ActorClass,
+    public pos: Point
   ) {}
 
   public moveInDirection(direction: Direction) {
@@ -46,20 +47,30 @@ export class Actor {
   }
 
   public toString() {
-    return 'Actor(char=' + this.char + ', pos={x:' + this.pos.x + ', y:' + this.pos.y + '}, color=' + this.color + ')';
+    return 'Actor(char=' + this.actorClass.char + ', pos={x:' + this.pos.x + ', y:' + this.pos.y + '}, color=' + this.actorClass.color + ')';
   }
 
   public static serialize(actor: Actor) {
-    return actor;
+    return {
+      className: actor.actorClass.className,
+      pos: actor.pos
+    };
   }
 
   public static deserialize(data: any) {
-    if (typeof data.pos !== 'object' ||
-      typeof data.char !== 'string' ||
-      typeof data.color !== 'string') {
-      throw 'bad actor data: ' + data;
+    if (!data.pos || typeof data.className !== 'string') {
+      console.log('bad actor data: ' + data);
+      return null;
     }
 
-    return new Actor(data.pos, data.char, data.color);
+    // re-establish reference to ActorClass
+    let className = <string>data.className;
+    let pos = <Point>data.pos;
+    let actorClass = ActorClass.getClassByName(className);
+    if (!actorClass) {
+      console.log('Unknown actor class: ' + className);
+      return null;
+    }
+    return new Actor(actorClass, pos);
   }
 }

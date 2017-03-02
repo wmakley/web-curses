@@ -82,10 +82,14 @@ export class ActorList {
     }
 
     let actorList = new ActorList(data.width, data.height);
-    data.sequential.forEach((actorData: any) => {
-      let actor = Actor.deserialize(actorData);
+    for (let i = 0; i < data.sequential.length; i++) {
+      let actor = Actor.deserialize(data.sequential[i]);
+      if (!actor) {
+        actorList = null;
+        break;
+      }
       actorList.addActor(actor);
-    });
+    }
 
     return actorList;
   }

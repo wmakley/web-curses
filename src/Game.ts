@@ -1,5 +1,6 @@
 import { WebCurses } from './WebCurses';
 import { Actor } from './Actor';
+import * as ActorClass from './ActorClass';
 import { ActorList } from './ActorList';
 import { Map } from './Map';
 import { Tile } from './Tile';
@@ -31,9 +32,9 @@ export class Game {
       this.storage.clear();
       this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
       this.actorList = new ActorList(this.screen.horizontalTiles, this.screen.verticalTiles);
-      this.player = new Actor({ x: 10, y: 10 }, '@', '#FFFFFF');
+      this.player = new Actor(ActorClass.Player, { x: 10, y: 10 });
       this.actorList.addActor(this.player);
-      this.actorList.addActor(new Actor({x: 12, y: 12 }, 'D', '#FF2222'));
+      this.actorList.addActor(new Actor(ActorClass.RedDragon, {x: 12, y: 12 }));
       this.drawFrame();
     }
 
@@ -114,8 +115,9 @@ export class Game {
   }
 
   private drawActor(actor: Actor) {
-    let x = actor.pos.x;
-    let y = actor.pos.y;
-    this.screen.putChar(actor.char, x, y, actor.color, '#000000');
+    const actorClass = actor.actorClass;
+    const x = actor.pos.x;
+    const y = actor.pos.y;
+    this.screen.putChar(actorClass.char, x, y, actorClass.color, '#000000');
   }
 }
