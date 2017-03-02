@@ -2,7 +2,7 @@ import { Point } from './Point'
 import { Map } from './Map'
 import { Direction } from './Command'
 
-export class Entity {
+export class Actor {
   constructor(
     public pos: Point,
     public char: string,
@@ -39,23 +39,27 @@ export class Entity {
   }
 
   public moveTo(x: number, y: number) {
-    let pos = {
+    this.pos = {
       x: x, y: y
     };
-    return new Entity(pos, this.char, this.color);
+    return this;
   }
 
-  public static serialize(entity: Entity) {
-    return entity;
+  public toString() {
+    return 'Actor(char=' + this.char + ', pos={x:' + this.pos.x + ', y:' + this.pos.y + '}, color=' + this.color + ')';
+  }
+
+  public static serialize(actor: Actor) {
+    return actor;
   }
 
   public static deserialize(data: any) {
     if (typeof data.pos !== 'object' ||
       typeof data.char !== 'string' ||
       typeof data.color !== 'string') {
-      throw 'bad entity data: ' + data;
+      throw 'bad actor data: ' + data;
     }
 
-    return new Entity(data.pos, data.char, data.color);
+    return new Actor(data.pos, data.char, data.color);
   }
 }

@@ -62,7 +62,8 @@ export class Map {
     let width = data.width;
     let height = data.height;
     if (!tiles || typeof tiles !== 'object' || typeof width !== 'number' || typeof height !== 'number' || typeof tiles.length !== 'number') {
-      throw 'bad map data';
+      console.log('bad map data: ' + data);
+      return null;
     }
     let deserializedTiles = <Array<Tile.Tile>>[];
     for (let i = 0; i < tiles.length; i++) {

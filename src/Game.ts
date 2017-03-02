@@ -1,9 +1,10 @@
 import { WebCurses } from './WebCurses';
-import { Entity } from './Entity';
+import { Actor } from './Actor';
+import { ActorList } from './ActorList';
 import { Map } from './Map';
 import { Tile } from './Tile';
 import * as Keyboard from './Keyboard';
-import { EntityCommand, MovementCommand, Direction } from './Command';
+import { ActorCommand, MovementCommand, Direction } from './Command';
 import { Storage } from './Storage';
 
 export class Game {
@@ -12,7 +13,8 @@ export class Game {
   private screen: WebCurses;
 
   private map: Map;
-  private player: Entity;
+  private actorList: ActorList;
+  private player: Actor;
   private storage: Storage;
 
   constructor(
@@ -26,8 +28,12 @@ export class Game {
 
     this.storage = new Storage();
     if (!this.loadGame()) {
-      this.player = new Entity({ x: 10, y: 10 }, '@', '#FFFFFF');
+      this.storage.clear();
       this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
+      this.actorList = new ActorList(this.screen.horizontalTiles, this.screen.verticalTiles);
+      this.player = new Actor({ x: 10, y: 10 }, '@', '#FFFFFF');
+      this.actorList.addActor(this.player);
+      this.actorList.addActor(new Actor({x: 12, y: 12 }, 'D', '#FF2222'));
       this.drawFrame();
     }
 
@@ -36,7 +42,7 @@ export class Game {
     const moveLeftCommand = new MovementCommand(Direction.Left);
     const moveRightCommand = new MovementCommand(Direction.Right);
 
-    let playerCommandMappings: { [key: string]: EntityCommand } = {
+    let playerCommandMappings: { [key: string]: ActorCommand } = {
       'ArrowUp': moveUpCommand,
       'k': moveUpCommand,
       'ArrowDown': moveDownCommand,
@@ -50,11 +56,11 @@ export class Game {
     window.addEventListener('keydown', (event) => {
       let key = Keyboard.getKey(event);
       if (key === null) return;
-      if (this.debug) console.log("keydown : '" + key + "'");
+      // if (this.debug) console.log("keydown : '" + key + "'");
       let command = playerCommandMappings[key];
       if (command) {
         event.preventDefault();
-        this.player = command.execute(this.player, this.map);
+        command.execute(this.player, this.map, this.actorList);
         this.drawFrame();
       }
     });
@@ -62,16 +68,27 @@ export class Game {
 
   public saveGame() {
     this.storage.saveMap('main', this.map);
-    this.storage.saveEntity('player', this.player);
+    this.storage.saveActorList('main', this.actorList);
   }
 
   public loadGame() {
-    let player = this.storage.loadEntity('player');
-    if (!player) return false;
     let map = this.storage.loadMap('main');
-    if (!map) return false;
-    this.player = player;
+    if (!map) {
+      console.log('no map, starting new game');
+      return false;
+    }
+    let actorList = this.storage.loadActorList('main');
+    if (!actorList) {
+      console.log('no actor list, starting new game');
+      return false;
+    }
+    this.player = actorList.get(0);
+    if (!this.player) {
+      console.log('no player, starting new game');
+      return false;
+    }
     this.map = map;
+    this.actorList = actorList;
     this.drawFrame();
     return true;
   }
@@ -82,8 +99,10 @@ export class Game {
 
   public drawFrame() {
     this.drawBackground();
-    this.drawEntity(this.player);
-    this.screen.putChar('D', 12, 13, '#FF0000', '#000000');
+    this.actorList.forEach((actor) => {
+      // console.log('draw actor: ' + actor.toString());
+      this.drawActor(actor);
+    });
   }
 
   private drawBackground() {
@@ -94,9 +113,9 @@ export class Game {
     });
   }
 
-  private drawEntity(entity: Entity) {
-    let x = entity.pos.x;
-    let y = entity.pos.y;
-    this.screen.putChar(entity.char, x, y, entity.color, '#000000');
+  private drawActor(actor: Actor) {
+    let x = actor.pos.x;
+    let y = actor.pos.y;
+    this.screen.putChar(actor.char, x, y, actor.color, '#000000');
   }
 }

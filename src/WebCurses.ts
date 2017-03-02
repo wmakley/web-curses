@@ -4,8 +4,8 @@ export class WebCurses {
   public readonly heightInPixels: number;
   public readonly horizontalTiles: number;
   public readonly verticalTiles: number;
-  private fontXCorrection: number
-  private fontYCorrection: number
+  public fontXCorrection: number
+  public fontYCorrection: number
 
   constructor(private canvas: HTMLCanvasElement,
     public readonly fontSize: number,
@@ -16,6 +16,9 @@ export class WebCurses {
     this.heightInPixels = canvas.height;
     this.horizontalTiles = Math.floor(this.widthInPixels / fontSize);
     this.verticalTiles = Math.floor(this.heightInPixels / fontSize);
+    // this is font-dependent, so users can change it
+    this.fontXCorrection = 2.5;
+    this.fontYCorrection = -2.6;
 
     if (typeof window.devicePixelRatio === 'number') {
       canvas.style.width = canvas.width.toString() + 'px';
@@ -34,8 +37,6 @@ export class WebCurses {
       font = font + ' monospace';
     }
     this.ctx.font = font;
-    this.fontXCorrection = 2.5;
-    this.fontYCorrection = -2;
 
     this.clear();
   }
