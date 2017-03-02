@@ -5,7 +5,8 @@ import { ActorList } from './ActorList';
 import { Map } from './Map';
 import { Tile } from './Tile';
 import * as Keyboard from './Keyboard';
-import { ActorCommand, MovementCommand, Direction } from './Command';
+import { ActorCommand, MovementCommand } from './Command';
+import { Direction } from './Direction';
 import { Storage } from './Storage';
 
 export class Game {
@@ -32,9 +33,9 @@ export class Game {
       this.storage.clear();
       this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
       this.actorList = new ActorList(this.screen.horizontalTiles, this.screen.verticalTiles);
-      this.player = new Actor(ActorClass.Player, { x: 10, y: 10 });
+      this.player = new Actor(ActorClass.Player, { x: 10, y: 10 }, 10);
       this.actorList.addActor(this.player);
-      this.actorList.addActor(new Actor(ActorClass.RedDragon, {x: 12, y: 12 }));
+      this.actorList.addActor(new Actor(ActorClass.RedDragon, {x: 12, y: 12 }, 20));
       this.drawFrame();
     }
 

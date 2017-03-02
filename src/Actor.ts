@@ -1,49 +1,21 @@
 import { Point } from './Point'
 import { Map } from './Map'
-import { Direction } from './Command'
 import * as ActorClass from './ActorClass'
 
 
 export class Actor {
   constructor(
     public readonly actorClass: ActorClass.ActorClass,
-    public pos: Point
+    public pos: Point,
+    public hp: number
   ) {}
 
-  public moveInDirection(direction: Direction) {
-    switch (direction) {
-      case Direction.Up:
-        return this.moveUp();
-      case Direction.Down:
-        return this.moveDown();
-      case Direction.Left:
-        return this.moveLeft();
-      case Direction.Right:
-        return this.moveRight();
-    }
+  public setPos(pos: Point) {
+    this.pos = pos;
   }
 
-  public moveUp() {
-    return this.moveTo(this.pos.x, this.pos.y - 1);
-  }
-
-  public moveDown() {
-    return this.moveTo(this.pos.x, this.pos.y + 1);
-  }
-
-  public moveLeft() {
-    return this.moveTo(this.pos.x - 1, this.pos.y)
-  }
-
-  public moveRight() {
-    return this.moveTo(this.pos.x + 1, this.pos.y);
-  }
-
-  public moveTo(x: number, y: number) {
-    this.pos = {
-      x: x, y: y
-    };
-    return this;
+  public attack(other: Actor) {
+    console.log('Attacking!');
   }
 
   public toString() {
@@ -53,12 +25,13 @@ export class Actor {
   public static serialize(actor: Actor) {
     return {
       className: actor.actorClass.className,
-      pos: actor.pos
+      pos: actor.pos,
+      hp: actor.hp
     };
   }
 
   public static deserialize(data: any) {
-    if (!data.pos || typeof data.className !== 'string') {
+    if (!data.pos || typeof data.className !== 'string' || typeof data.hp !== 'number') {
       console.log('bad actor data: ' + data);
       return null;
     }
@@ -71,6 +44,6 @@ export class Actor {
       console.log('Unknown actor class: ' + className);
       return null;
     }
-    return new Actor(actorClass, pos);
+    return new Actor(actorClass, pos, data.hp);
   }
 }
