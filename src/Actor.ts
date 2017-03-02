@@ -23,11 +23,16 @@ export class Actor {
   }
 
   public static serialize(actor: Actor) {
-    return {
-      className: actor.actorClass.className,
-      pos: actor.pos,
-      hp: actor.hp
-    };
+    let clone = <any>{};
+    for (let key in actor) {
+      if (!actor.hasOwnProperty(key)) continue;
+      if (key === 'actorClass') {
+        clone.className = actor.actorClass.className;
+      } else {
+        clone[key] = (<any>actor)[key];
+      }
+    }
+    return clone;
   }
 
   public static deserialize(data: any) {
