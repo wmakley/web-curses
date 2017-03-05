@@ -15,7 +15,7 @@ export class Actor {
   }
 
   public attack(other: Actor) {
-    console.log('Attacking!');
+    console.log('You attack the ' + other.actorClass.name + '!');
   }
 
   public toString() {

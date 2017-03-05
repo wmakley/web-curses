@@ -13,11 +13,11 @@ export class Game {
   public debug: boolean;
 
   private screen: WebCurses;
+  private storage: Storage;
 
   private map: Map;
   private actorList: ActorList;
   private player: Actor;
-  private storage: Storage;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -35,7 +35,7 @@ export class Game {
       this.actorList = new ActorList(this.screen.horizontalTiles, this.screen.verticalTiles);
       this.player = new Actor(ActorClass.Player, { x: 10, y: 10 }, 10);
       this.actorList.addActor(this.player);
-      this.actorList.addActor(new Actor(ActorClass.RedDragon, {x: 12, y: 12 }, 20));
+      this.actorList.addActor(new Actor(ActorClass.HugeHollow, {x: 12, y: 12 }, 20));
       this.drawFrame();
     }
 

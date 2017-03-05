@@ -21,7 +21,6 @@ export class MovementCommand implements ActorCommand {
     }
     let target = actorList.actorAtPosition(newPos);
     if (target) {
-      console.log('Attack ' + target.actorClass.description);
       actor.attack(target);
       return
     }
