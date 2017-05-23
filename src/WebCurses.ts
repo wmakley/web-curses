@@ -1,3 +1,7 @@
+/**
+ * Wrapper for manipulating a canvas as though it were a simple kind of
+ * terminal.
+ */
 export class WebCurses {
   private ctx: CanvasRenderingContext2D
   public readonly widthInPixels: number;

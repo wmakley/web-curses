@@ -143,24 +143,4 @@ export class Game {
     const y = actor.pos.y;
     this.screen.putChar(actorClass.char, x, y, actorClass.color, '#000000');
   }
-
-  public static serialize(game: Game) {
-    return {
-      map: Map.serialize(game.map),
-      actorList: ActorList.serialize(game.actorList)
-    };
-  }
-
-  public static deserialize(data: any, config: Config) {
-    if (typeof data['map'] !== 'object' ||
-      typeof data['actorList'] !== 'object') {
-      throw "bad game data!";
-    }
-
-    const map = Map.deserialize(data.map);
-    const actorList = ActorList.deserialize(data.actorList);
-
-    let game = new Game(config.canvas, config.fontSize, config.fontFace);
-    // TODO: allow passing a raw map and actor list into a Game
-  }
 }
