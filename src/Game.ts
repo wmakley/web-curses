@@ -1,4 +1,5 @@
 import { WebCurses } from './WebCurses';
+import { GameRenderer } from './GameRenderer';
 import { Actor } from './Actor';
 import * as ActorClass from './ActorClass';
 import { ActorList } from './ActorList';
@@ -9,16 +10,17 @@ import { ActorCommand, MovementCommand } from './Command';
 import { Direction } from './Direction';
 import { Storage } from './Storage';
 
-export interface Config {
-  canvas: HTMLCanvasElement
-  fontSize: number
-  fontFace?: string
-}
 
+/**
+ * Main entry point. Owns all objects, and provides an API
+ * for manipulating state that AI and player interaction
+ * code can call into.
+ */
 export class Game {
   public debug: boolean;
 
-  private screen: WebCurses;
+  private term: WebCurses;
+  private renderer: GameRenderer;
   private storage: Storage;
   private eventHandler: Keyboard.EventHandler;
 
@@ -32,8 +34,11 @@ export class Game {
     public readonly fontFace?: string
   ) {
     this.debug = canvas.dataset['debug'] === 'true';
-    this.screen = new WebCurses(canvas, fontSize, fontFace);
-    if (this.debug) console.log('Font: ' + fontSize + 'px ' + (fontFace || '') + '; ' + this.screen.horizontalTiles + ' tiles x ' + this.screen.verticalTiles + ' tiles');
+
+    this.term = new WebCurses(canvas, fontSize, fontFace);
+    this.renderer = new GameRenderer(this.term);
+
+    if (this.debug) console.log('Font: ' + fontSize + 'px ' + (fontFace || '') + '; ' + this.term.horizontalTiles + ' tiles x ' + this.term.verticalTiles + ' tiles');
 
     this.storage = new Storage();
     if (!this.loadGame()) {
@@ -69,7 +74,7 @@ export class Game {
       playerCommandMappings,
       (command: ActorCommand) => {
         command.execute(this.player, this);
-        this.drawFrame();
+        this.updateDisplay();
       }
     );
   }
@@ -98,18 +103,18 @@ export class Game {
     }
     this.map = map;
     this.actorList = actorList;
-    this.drawFrame();
+    this.updateDisplay();
     return true;
   }
 
   public startNewGame() {
     this.storage.clear();
-    this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
-    this.actorList = new ActorList(this.screen.horizontalTiles, this.screen.verticalTiles);
+    this.map = new Map(this.term.horizontalTiles, this.term.verticalTiles);
+    this.actorList = new ActorList(this.term.horizontalTiles, this.term.verticalTiles);
     this.player = new Actor(ActorClass.Player, { x: 10, y: 10 }, 10);
     this.actorList.addActor(this.player);
     this.actorList.addActor(new Actor(ActorClass.HugeHollow, {x: 12, y: 12 }, 20));
-    this.drawFrame();
+    this.updateDisplay();
     return true;
   }
 
@@ -121,26 +126,7 @@ export class Game {
     return this.storage.dataExists('main');
   }
 
-  public drawFrame() {
-    this.drawBackground();
-    this.actorList.forEach((actor) => {
-      // console.log('draw actor: ' + actor.toString());
-      this.drawActor(actor);
-    });
-  }
-
-  private drawBackground() {
-    this.screen.clear('#000000');
-    this.map.eachTile((x: number, y: number, tile: Tile) => {
-      var tileType = tile.type;
-      this.screen.putChar(tileType.char, x, y, tileType.color, tileType.bgColor);
-    });
-  }
-
-  private drawActor(actor: Actor) {
-    const actorClass = actor.actorClass;
-    const x = actor.pos.x;
-    const y = actor.pos.y;
-    this.screen.putChar(actorClass.char, x, y, actorClass.color, '#000000');
+  private updateDisplay() {
+    this.renderer.update(this.map, this.actorList);
   }
 }
