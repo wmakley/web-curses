@@ -14,9 +14,10 @@ export class Game {
 
   private screen: WebCurses;
   private storage: Storage;
+  private eventHandler: Keyboard.EventHandler;
 
-  private map: Map;
-  private actorList: ActorList;
+  public map: Map;
+  public actorList: ActorList;
   private player: Actor;
 
   constructor(
@@ -30,21 +31,19 @@ export class Game {
 
     this.storage = new Storage();
     if (!this.loadGame()) {
-      this.storage.clear();
-      this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
-      this.actorList = new ActorList(this.screen.horizontalTiles, this.screen.verticalTiles);
-      this.player = new Actor(ActorClass.Player, { x: 10, y: 10 }, 10);
-      this.actorList.addActor(this.player);
-      this.actorList.addActor(new Actor(ActorClass.HugeHollow, {x: 12, y: 12 }, 20));
-      this.drawFrame();
+      this.startNewGame();
     }
 
     const moveUpCommand = new MovementCommand(Direction.Up);
     const moveDownCommand = new MovementCommand(Direction.Down);
     const moveLeftCommand = new MovementCommand(Direction.Left);
     const moveRightCommand = new MovementCommand(Direction.Right);
+    const moveNWCommand = new MovementCommand(Direction.NW);
+    const moveNECommand = new MovementCommand(Direction.NE);
+    const moveSWCommand = new MovementCommand(Direction.SW);
+    const moveSECommand = new MovementCommand(Direction.SE);
 
-    let playerCommandMappings: { [key: string]: ActorCommand } = {
+    const playerCommandMappings: { [key: string]: ActorCommand } = {
       'ArrowUp': moveUpCommand,
       'k': moveUpCommand,
       'ArrowDown': moveDownCommand,

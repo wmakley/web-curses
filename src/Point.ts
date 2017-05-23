@@ -25,6 +25,14 @@ export function moveInDirection(point: Point, direction: Direction) {
       return moveLeft(point);
     case Direction.Right:
       return moveRight(point);
+    case Direction.NW:
+      return moveNW(point);
+    case Direction.NE:
+      return moveNE(point);
+    case Direction.SW:
+      return moveSW(point);
+    case Direction.SE:
+      return moveSE(point);
   }
 }
 
@@ -42,4 +50,20 @@ export function moveLeft(point: Point) {
 
 export function moveRight(point: Point) {
   return { x: point.x + 1, y: point.y };
+}
+
+export function moveNW(point: Point) {
+  return moveLeft(moveUp(point));
+}
+
+export function moveNE(point: Point) {
+  return moveRight(moveUp(point));
+}
+
+export function moveSW(point: Point) {
+  return moveLeft(moveDown(point));
+}
+
+export function moveSE(point: Point) {
+  return moveRight(moveDown(point));
 }
