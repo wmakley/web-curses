@@ -2,6 +2,10 @@ import { Map } from './Map';
 import { Actor } from './Actor';
 import { ActorList } from './ActorList';
 
+/**
+ * TODO: need to just have a function to save and load an entire game,
+ * and allow multiple saves with different names.
+ */
 export class Storage {
 
   public saveMap(name: string, map: Map) {
@@ -24,16 +28,6 @@ export class Storage {
     const data = this.loadObject('ActorList_' + name);
     if (data === undefined) return data;
     return ActorList.deserialize(data);
-  }
-
-  public saveActor(name: string, actor: Actor) {
-    return this.saveObject('Actor_' + name, Actor.serialize(actor));
-  }
-
-  public loadActor(name: string) {
-    const data = this.loadObject('Actor_' + name);
-    if (data === undefined) return data;
-    return Actor.deserialize(data);
   }
 
   private saveObject(name: string, object: Object) {
@@ -62,5 +56,12 @@ export class Storage {
       console.log('remove key: ' + key);
       window.localStorage.removeItem(key);
     });
+
+    return true;
+  }
+
+  public dataExists(name: string) {
+    const data = this.loadMap(name);
+    return (typeof data !== 'undefined' && data !== null);
   }
 }

@@ -9,6 +9,12 @@ import { ActorCommand, MovementCommand } from './Command';
 import { Direction } from './Direction';
 import { Storage } from './Storage';
 
+export interface Config {
+  canvas: HTMLCanvasElement
+  fontSize: number
+  fontFace?: string
+}
+
 export class Game {
   public debug: boolean;
 
@@ -71,6 +77,7 @@ export class Game {
   public saveGame(name = 'main') {
     this.storage.saveMap(name, this.map);
     this.storage.saveActorList(name, this.actorList);
+    return true;
   }
 
   public loadGame(name = 'main') {
@@ -103,10 +110,15 @@ export class Game {
     this.actorList.addActor(this.player);
     this.actorList.addActor(new Actor(ActorClass.HugeHollow, {x: 12, y: 12 }, 20));
     this.drawFrame();
+    return true;
   }
 
   public deleteGame() {
     return this.storage.clear();
+  }
+
+  public saveExists() {
+    return this.storage.dataExists('main');
   }
 
   public drawFrame() {
@@ -130,5 +142,25 @@ export class Game {
     const x = actor.pos.x;
     const y = actor.pos.y;
     this.screen.putChar(actorClass.char, x, y, actorClass.color, '#000000');
+  }
+
+  public static serialize(game: Game) {
+    return {
+      map: Map.serialize(game.map),
+      actorList: ActorList.serialize(game.actorList)
+    };
+  }
+
+  public static deserialize(data: any, config: Config) {
+    if (typeof data['map'] !== 'object' ||
+      typeof data['actorList'] !== 'object') {
+      throw "bad game data!";
+    }
+
+    const map = Map.deserialize(data.map);
+    const actorList = ActorList.deserialize(data.actorList);
+
+    let game = new Game(config.canvas, config.fontSize, config.fontFace);
+    // TODO: allow passing a raw map and actor list into a Game
   }
 }
