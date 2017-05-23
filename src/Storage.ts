@@ -9,20 +9,20 @@ export class Storage {
   }
 
   public loadMap(name: string) {
-    let data = this.loadObject('Map_' + name);
-    if (!data) return data;
-    let map = Map.deserialize(data);
+    const data = this.loadObject('Map_' + name);
+    if (data === undefined) return data;
+    const map = Map.deserialize(data);
     return map;
   }
 
   public saveActorList(name: string, actorList: ActorList) {
-    let serialized = ActorList.serialize(actorList);
+    const serialized = ActorList.serialize(actorList);
     return this.saveObject('ActorList_' + name, serialized);
   }
 
   public loadActorList(name: string) {
-    let data = this.loadObject('ActorList_' + name);
-    if (!data) return data;
+    const data = this.loadObject('ActorList_' + name);
+    if (data === undefined) return data;
     return ActorList.deserialize(data);
   }
 
@@ -31,8 +31,8 @@ export class Storage {
   }
 
   public loadActor(name: string) {
-    let data = this.loadObject('Actor_' + name);
-    if (!data) return data;
+    const data = this.loadObject('Actor_' + name);
+    if (data === undefined) return data;
     return Actor.deserialize(data);
   }
 
@@ -42,10 +42,11 @@ export class Storage {
     return window.localStorage.setItem(name, stringRep);
   }
 
+  // Always return undefined on failure
   private loadObject(name: string) {
-    let data = window.localStorage.getItem(name);
+    const data = window.localStorage.getItem(name);
     console.log('Load data "' + name + "'");
-    if (!data) return data;
+    if (data === null || data === undefined) return undefined;
     return JSON.parse(data);
   }
 

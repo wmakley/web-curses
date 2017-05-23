@@ -1,7 +1,9 @@
+import { ActorCommand } from './Command';
+
 /**
- * keyCode to key mappings
- */
-export let CODES: { [code: number]: string; } = {
+* keyCode to key mappings
+*/
+export const CODES: { [code: number]: string; } = {
   13: 'Enter',
   27: 'Escape',
   32: ' ',

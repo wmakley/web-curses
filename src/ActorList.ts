@@ -18,10 +18,11 @@ export class ActorList {
     this.sequential.push(actor);
     let key = this.key(actor.pos);
     this.associative[key] = actor;
+    return this.sequential.length - 1;
   }
 
   public removeActor(actor: Actor) {
-    let key = this.key(actor.pos);
+    const key = this.key(actor.pos);
     if (this.associative[key] === actor) {
       delete this.associative[key];
     }
@@ -66,7 +67,7 @@ export class ActorList {
 
   public static serialize(actorList: ActorList) {
     // save only the sequential Array and rebuild associative on deserialize
-    let actors = actorList.sequential.map((actor) => {
+    const actors = actorList.sequential.map((actor) => {
       return Actor.serialize(actor);
     });
 
@@ -78,14 +79,14 @@ export class ActorList {
       typeof data.width !== 'number' ||
       typeof data.height !== 'number') {
       console.log('bad actorList data: ' + data);
-      return null;
+      return undefined;
     }
 
     let actorList = new ActorList(data.width, data.height);
     for (let i = 0; i < data.sequential.length; i++) {
       let actor = Actor.deserialize(data.sequential[i]);
-      if (!actor) {
-        actorList = null;
+      if (actor === undefined) {
+        actorList = undefined;
         break;
       }
       actorList.addActor(actor);

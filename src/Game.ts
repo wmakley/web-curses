@@ -52,40 +52,41 @@ export class Game {
       'ArrowLeft': moveLeftCommand,
       'h': moveLeftCommand,
       'ArrowRight': moveRightCommand,
-      'l': moveRightCommand
+      'l': moveRightCommand,
+      'y': moveNWCommand,
+      'u': moveNECommand,
+      'b': moveSWCommand,
+      'n': moveSECommand
     };
 
-    window.addEventListener('keydown', (event) => {
-      let key = Keyboard.getKey(event);
-      if (key === null) return;
-      // if (this.debug) console.log("keydown : '" + key + "'");
-      let command = playerCommandMappings[key];
-      if (command) {
-        event.preventDefault();
-        command.execute(this.player, this.map, this.actorList);
+    this.eventHandler = Keyboard.createEventHandler(
+      window,
+      playerCommandMappings,
+      (command: ActorCommand) => {
+        command.execute(this.player, this);
         this.drawFrame();
       }
-    });
+    );
   }
 
-  public saveGame() {
-    this.storage.saveMap('main', this.map);
-    this.storage.saveActorList('main', this.actorList);
+  public saveGame(name = 'main') {
+    this.storage.saveMap(name, this.map);
+    this.storage.saveActorList(name, this.actorList);
   }
 
-  public loadGame() {
-    let map = this.storage.loadMap('main');
-    if (!map) {
+  public loadGame(name = 'main') {
+    const map = this.storage.loadMap(name);
+    if (map === undefined) {
       console.log('no map, starting new game');
       return false;
     }
-    let actorList = this.storage.loadActorList('main');
-    if (!actorList) {
+    const actorList = this.storage.loadActorList(name);
+    if (actorList === undefined) {
       console.log('no actor list, starting new game');
       return false;
     }
     this.player = actorList.get(0);
-    if (!this.player) {
+    if (this.player === undefined) {
       console.log('no player, starting new game');
       return false;
     }
@@ -93,6 +94,16 @@ export class Game {
     this.actorList = actorList;
     this.drawFrame();
     return true;
+  }
+
+  public startNewGame() {
+    this.storage.clear();
+    this.map = new Map(this.screen.horizontalTiles, this.screen.verticalTiles);
+    this.actorList = new ActorList(this.screen.horizontalTiles, this.screen.verticalTiles);
+    this.player = new Actor(ActorClass.Player, { x: 10, y: 10 }, 10);
+    this.actorList.addActor(this.player);
+    this.actorList.addActor(new Actor(ActorClass.HugeHollow, {x: 12, y: 12 }, 20));
+    this.drawFrame();
   }
 
   public deleteGame() {

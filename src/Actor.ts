@@ -42,12 +42,12 @@ export class Actor {
     }
 
     // re-establish reference to ActorClass
-    let className = <string>data.className;
-    let pos = <Point>data.pos;
-    let actorClass = ActorClass.getClassByName(className);
-    if (!actorClass) {
+    const className = <string>data.className;
+    const pos = <Point>data.pos;
+    const actorClass = ActorClass.getClassByName(className);
+    if (actorClass === undefined) {
       console.log('Unknown actor class: ' + className);
-      return null;
+      return undefined;
     }
     return new Actor(actorClass, pos, data.hp);
   }
