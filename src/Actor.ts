@@ -18,6 +18,10 @@ export class Actor {
     console.log('You attack the ' + other.actorClass.name + '!');
   }
 
+  public update(game: any) {
+    return this.actorClass.update(game);
+  }
+
   public toString() {
     return 'Actor(char=' + this.actorClass.char + ', pos={x:' + this.pos.x + ', y:' + this.pos.y + '}, color=' + this.actorClass.color + ')';
   }

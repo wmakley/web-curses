@@ -1,14 +1,16 @@
 import { WebCurses } from './WebCurses';
 import { GameRenderer } from './GameRenderer';
+import { GameState } from './GameState';
 import { Actor } from './Actor';
 import * as ActorClass from './ActorClass';
 import { ActorList } from './ActorList';
 import { Map } from './Map';
 import { Tile } from './Tile';
 import * as Keyboard from './Keyboard';
-import { ActorCommand, MovementCommand } from './Command';
+import * as Command from './Command';
 import { Direction } from './Direction';
 import { Storage } from './Storage';
+import * as Point from './Point';
 
 
 /**
@@ -24,9 +26,7 @@ export class Game {
   private storage: Storage;
   private eventHandler: Keyboard.EventHandler;
 
-  public map: Map;
-  public actorList: ActorList;
-  private player: Actor;
+  private state: GameState;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -45,16 +45,17 @@ export class Game {
       this.startNewGame();
     }
 
-    const moveUpCommand = new MovementCommand(Direction.Up);
-    const moveDownCommand = new MovementCommand(Direction.Down);
-    const moveLeftCommand = new MovementCommand(Direction.Left);
-    const moveRightCommand = new MovementCommand(Direction.Right);
-    const moveNWCommand = new MovementCommand(Direction.NW);
-    const moveNECommand = new MovementCommand(Direction.NE);
-    const moveSWCommand = new MovementCommand(Direction.SW);
-    const moveSECommand = new MovementCommand(Direction.SE);
+    let player = this.state.player;
+    const moveUpCommand = new Command.PlayerMovement(player, Direction.Up);
+    const moveDownCommand = new Command.PlayerMovement(player, Direction.Down);
+    const moveLeftCommand = new Command.PlayerMovement(player, Direction.Left);
+    const moveRightCommand = new Command.PlayerMovement(player, Direction.Right);
+    const moveNWCommand = new Command.PlayerMovement(player, Direction.NW);
+    const moveNECommand = new Command.PlayerMovement(player, Direction.NE);
+    const moveSWCommand = new Command.PlayerMovement(player, Direction.SW);
+    const moveSECommand = new Command.PlayerMovement(player, Direction.SE);
 
-    const playerCommandMappings: { [key: string]: ActorCommand } = {
+    const playerCommandMappings: { [key: string]: Command.Command } = {
       'ArrowUp': moveUpCommand,
       'k': moveUpCommand,
       'ArrowDown': moveDownCommand,
@@ -72,48 +73,36 @@ export class Game {
     this.eventHandler = Keyboard.createEventHandler(
       window,
       playerCommandMappings,
-      (command: ActorCommand) => {
-        command.execute(this.player, this);
+      (command: Command.Command) => {
+        command.execute(this.state);
         this.updateDisplay();
       }
     );
   }
 
   public saveGame(name = 'main') {
-    this.storage.saveMap(name, this.map);
-    this.storage.saveActorList(name, this.actorList);
+    this.storage.saveGame(name, this.state);
     return true;
   }
 
   public loadGame(name = 'main') {
-    const map = this.storage.loadMap(name);
-    if (map === undefined) {
-      console.log('no map, starting new game');
+    this.state = this.storage.loadGame(name);
+    if (!this.state) {
+      console.log('bad save data, starting new game');
       return false;
     }
-    const actorList = this.storage.loadActorList(name);
-    if (actorList === undefined) {
-      console.log('no actor list, starting new game');
-      return false;
-    }
-    this.player = actorList.get(0);
-    if (this.player === undefined) {
-      console.log('no player, starting new game');
-      return false;
-    }
-    this.map = map;
-    this.actorList = actorList;
     this.updateDisplay();
     return true;
   }
 
   public startNewGame() {
     this.storage.clear();
-    this.map = new Map(this.term.horizontalTiles, this.term.verticalTiles);
-    this.actorList = new ActorList(this.term.horizontalTiles, this.term.verticalTiles);
-    this.player = new Actor(ActorClass.Player, { x: 10, y: 10 }, 10);
-    this.actorList.addActor(this.player);
-    this.actorList.addActor(new Actor(ActorClass.HugeHollow, {x: 12, y: 12 }, 20));
+    const map = new Map(this.term.horizontalTiles, this.term.verticalTiles);
+    const actorList = new ActorList(this.term.horizontalTiles, this.term.verticalTiles);
+    const player = new Actor(ActorClass.Player, { x: 10, y: 10 }, 10);
+    actorList.addActor(player);
+    actorList.addActor(new Actor(ActorClass.HugeHollow, { x: 12, y: 12 }, 20));
+    this.state = new GameState(map, actorList);
     this.updateDisplay();
     return true;
   }
@@ -127,6 +116,6 @@ export class Game {
   }
 
   private updateDisplay() {
-    this.renderer.update(this.map, this.actorList);
+    this.renderer.update(this.state);
   }
 }

@@ -1,9 +1,13 @@
+import * as Command from './Command';
+import { Game } from './Game';
+
 export interface ActorClass {
-  className: string,
-  name: string,
-  description: string,
-  char: string,
+  className: string
+  name: string
+  description: string
+  char: string
   color: string
+  update: (game: Game) => Array<Command.Command>
 }
 
 export const Player: ActorClass = {
@@ -11,9 +15,9 @@ export const Player: ActorClass = {
   name: 'Player',
   description: 'This is you.',
   char: '@',
-  color: '#FFFFFF'
+  color: '#FFFFFF',
+  update: (game: Game) => undefined
 }
-
 
 export const HugeHollow: ActorClass = {
   className: 'HugeHollow',
@@ -21,6 +25,11 @@ export const HugeHollow: ActorClass = {
   description: 'It is a huge hollow. It is very scary.',
   char: 'H',
   color: '#FF0000',
+  update: (game: Game) => {
+    return [
+      new Command.ShowMessage("The huge hollow looks at you!")
+    ]
+  }
 }
 
 let classes: { [name: string]:ActorClass } = { };

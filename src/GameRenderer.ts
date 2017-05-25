@@ -1,15 +1,16 @@
 import { WebCurses } from './WebCurses';
 import { Map } from './Map';
 import { Tile } from './Tile';
-import { ActorList } from './ActorList';
 import { Actor } from './Actor';
+import { GameState } from './GameState';
+
 
 export class GameRenderer {
   constructor(private screen: WebCurses) {}
 
-  public update(map: Map, actorList: ActorList) {
-    this.drawBackground(map);
-    actorList.forEach((actor) => {
+  public update(state: GameState) {
+    this.drawBackground(state.map);
+    state.actorList.forEach((actor) => {
       this.drawActor(actor);
     });
   }

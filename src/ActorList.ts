@@ -38,7 +38,7 @@ export class ActorList {
     const oldKey = this.key(oldPos);
     const newKey = this.key(newPos);
     const actor = this.associative[oldKey];
-    if (!actor) {
+    if (actor === undefined) {
       throw 'Actor not found at old position!';
     }
     delete this.associative[oldKey];
@@ -47,6 +47,18 @@ export class ActorList {
 
   public get(index: number) {
     return this.sequential[index];
+  }
+
+  public getPlayer() {
+    let player;
+    for (let i = 0; i < this.sequential.length; i += 1) {
+      const elt = this.get(i);
+      if (elt.actorClass.className === "Player") {
+        player = elt;
+        break;
+      }
+    }
+    return player;
   }
 
   public actorAtPosition(position: Point) {

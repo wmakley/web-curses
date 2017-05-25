@@ -1,12 +1,24 @@
 import { Map } from './Map';
 import { Actor } from './Actor';
 import { ActorList } from './ActorList';
+import { GameState } from './GameState';
 
 /**
  * TODO: need to just have a function to save and load an entire game,
  * and allow multiple saves with different names.
  */
 export class Storage {
+
+  public saveGame(name: string, gameState: GameState) {
+    return this.saveObject('Game_' + name, GameState.serialize(gameState));
+  }
+
+  public loadGame(name: string) {
+    const data = this.loadObject('Game_' + name);
+    if (!data) return undefined;
+    const gameState = GameState.deserialize(data);
+    return gameState;
+  }
 
   public saveMap(name: string, map: Map) {
     return this.saveObject('Map_' + name, Map.serialize(map));

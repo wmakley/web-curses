@@ -1,54 +1,56 @@
 import { Actor } from './Actor';
-import { Game } from './Game';
+import { Tile } from './Tile';
+import { GameState, MovementResult } from './GameState';
 import * as Point from './Point';
 import * as Direction from './Direction';
 
-export interface ActorCommand {
-  execute: (actor: Actor, game: Game) => void;
-  undo: (actor: Actor, game: Game) => void;
+export interface Command {
+  execute: (game: GameState) => void;
+  undo: (game: GameState) => void;
 }
 
-export class MovementCommand implements ActorCommand {
+export class PlayerMovement implements Command {
 
-  constructor(public readonly direction: Direction.Direction) { }
-
-  public execute(actor: Actor, game: Game) {
-    let newPos = Point.moveInDirection(actor.pos, this.direction);
-    let map = game.map;
-    let actorList = game.actorList;
-    if (!map.isPassable(newPos.x, newPos.y)) {
-      console.log('new space impassable');
-      return;
-    }
-    let target = actorList.actorAtPosition(newPos);
-    if (target) {
-      actor.attack(target);
-      return
-    }
-
-    const oldPos = Point.clone(actor.pos);
-    actor.setPos(newPos);
-    actorList.actorMoved(oldPos, newPos);
+  constructor(private player: Actor, private direction: Direction.Direction) {
   }
 
-  public undo(actor: Actor, game: Game) {
-    const reversed = Direction.reverse(this.direction);
-    const oldPos = Point.clone(actor.pos);
-    const newPos = Point.moveInDirection(oldPos, reversed);
-    const actorList = game.actorList;
-    actor.setPos(newPos);
-    actorList.actorMoved(oldPos, newPos);
+  private oldPos: Point.Point;
+
+  public toString() {
+    return "<PlayerMovement actor:Player direction:" + Direction.description(this.direction) + ">";
+  }
+
+  public execute(game: GameState) {
+    const [result, arg] = game.moveActorInDirection(this.player, this.direction);
+    if (result === MovementResult.Impassable) {
+      // don't end the turn, just show the message
+      this.oldPos = this.player.pos;
+      const tile = <Tile>arg;
+      game.showMessage("You hit your head on the " + tile.type.description + ".");
+    }
+    else if (result === MovementResult.Occupied) {
+      this.oldPos = this.player.pos;
+      game.combat(this.player, <Actor>arg);
+      game.endPlayerTurn();
+    }
+    else {
+      // if success, just record the previous position and end the turn
+      this.oldPos = <Point.Point>arg;
+      game.endPlayerTurn();
+    }
+  }
+
+  public undo(game: GameState) {
+    game.unsafelyMoveActorToPoint(this.player, this.oldPos);
   }
 }
 
+export class ShowMessage implements Command {
+  constructor(private message: string) { }
 
-export class AttackCommand implements ActorCommand {
-
-  constructor(public readonly target: Actor) { }
-
-  public execute(attacker: Actor, game: Game) {
+  public execute(game: GameState) {
+    game.showMessage(this.message);
   }
 
-  public undo(attacker: Actor, game: Game) {
-  }
+  public undo(game: GameState) { }
 }

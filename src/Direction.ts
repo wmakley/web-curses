@@ -24,3 +24,26 @@ export function reverse(direction: Direction) {
       throw 'Unknown direction: ' + this.direction;
   }
 }
+
+export function description(direction: Direction) {
+    switch (direction) {
+    case Direction.Up:
+      return "Up";
+    case Direction.Down:
+      return "Down";
+    case Direction.Left:
+      return "Left";
+    case Direction.Right:
+      return "Right";
+    case Direction.NW:
+      return "Northwest";
+    case Direction.NE:
+      return "Northeast";
+    case Direction.SW:
+      return "Southwest";
+    case Direction.SE:
+      return "Southeast";
+    default:
+      throw 'Unknown direction: ' + this.direction;
+  }
+}

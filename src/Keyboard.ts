@@ -1,4 +1,4 @@
-import { ActorCommand } from './Command';
+import { Command } from './Command';
 
 /**
 * keyCode to key mappings
@@ -49,8 +49,8 @@ export interface EventHandler {
  */
 export function createEventHandler(
   eventTarget: any,
-  mappings: { [key: string]: ActorCommand },
-  onInput: (command: ActorCommand) => void)
+  mappings: { [key: string]: Command },
+  onInput: (command: Command) => void)
 {
   function listener(event: KeyboardEvent) {
     const key = getKey(event);
