@@ -46,6 +46,16 @@ export class Map {
     }
   }
 
+  /**
+   * Iterate over each tile in a 2D slice of the map,
+   * yielding each tile's coordinates RELATIVE TO THE SLICE
+   * (so zero-based) and the Tile itself to a callback.
+   * @param startX
+   * @param sliceWidth
+   * @param startY
+   * @param sliceHeight
+   * @param callback
+   */
   public eachTileInSlice(
     startX: number, sliceWidth: number,
     startY: number, sliceHeight: number,
@@ -67,6 +77,7 @@ export class Map {
     return tile.type.passable;
   }
 
+
   public static serialize(map: Map) {
     return {
       width: map.width,
@@ -78,8 +89,8 @@ export class Map {
   }
 
   /**
-   * Reconnect tiles to their type classes and turn raw json back into a Map instance.
-   * @param data
+   * Turn raw json back into a Map instance by reconnecting tiles to their type classes.
+   * @param data A raw object from local storage
    */
   public static deserialize(data: any) {
     let tiles = data.tiles;

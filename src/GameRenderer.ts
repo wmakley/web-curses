@@ -57,7 +57,7 @@ export class GameRenderer {
         if (tile === OUT_OF_BOUNDS) {
           return;
         }
-        var tileType = tile.type;
+        const tileType = tile.type;
         this.curses.putChar(tileType.char, x, y, tileType.color, tileType.bgColor);
       }
     );
