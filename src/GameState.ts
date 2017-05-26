@@ -19,14 +19,24 @@ export class GameState {
     this.player = actorList.getPlayer();
   }
 
+  /**
+   * Prevent trying to load old data that is incompatible with a newer version of the game.
+   * Bump whenever the save format changes.
+   */
+  public static readonly VERSION = "0.1";
+
   public static serialize(gameState: GameState) {
     return {
+      version: GameState.VERSION,
       map: Map.serialize(gameState.map),
       actorList: ActorList.serialize(gameState.actorList)
     }
   }
 
   public static deserialize(data: any) {
+    if (typeof data['version'] === 'undefined' || data.version !== GameState.VERSION) {
+      throw "Game data version mismatch! Saved: " + data.version + ", Current: " + GameState.VERSION;
+    }
     if (typeof data['map'] !== 'object' ||
       typeof data['actorList'] !== 'object') {
       throw "bad GameState data";
