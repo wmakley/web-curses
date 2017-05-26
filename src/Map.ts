@@ -1,5 +1,7 @@
 import * as Tile from './Tile';
-import { Wall, Floor } from './TileType';
+import { Wall, Floor, OutOfBounds } from './TileType';
+
+export const OUT_OF_BOUNDS = <Tile.Tile>{ type: OutOfBounds };
 
 /**
  * Basically just a container of a bunch of tiles.
@@ -23,8 +25,15 @@ export class Map {
     }
   }
 
+  /**
+   * Returns OUT_OF_BOUNDS if the coordinates are invalid.
+   * @param x
+   * @param y
+   */
   public tileAt(x: number, y: number) {
-    if (x < 0 || y < 0 || x >= this.width || y >= this.width) return null;
+    if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
+      return OUT_OF_BOUNDS;
+    }
     return this.tiles[this.width * y + x];
   }
 
@@ -37,9 +46,24 @@ export class Map {
     }
   }
 
+  public eachTileInSlice(
+    startX: number, sliceWidth: number,
+    startY: number, sliceHeight: number,
+    callback: (x: number, y: number, tile: Tile.Tile) => void)
+  {
+    let screenX = 0;
+    for (let x = startX; x < sliceWidth; x += 1) {
+      let screenY = 0;
+      for (let y = startY; y < sliceHeight; y += 1) {
+        callback(screenX, screenY, this.tileAt(x, y));
+        screenY += 1;
+      }
+      screenX += 1;
+    }
+  }
+
   public isPassable(x: number, y: number) {
-    if (x < 0 || y < 0 || x >= this.width || y >= this.width) return false;
-    let tile = this.tileAt(x, y);
+    const tile = this.tileAt(x, y);
     return tile.type.passable;
   }
 

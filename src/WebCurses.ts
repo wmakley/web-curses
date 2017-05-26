@@ -1,3 +1,5 @@
+import { Point } from './Point';
+
 /**
  * Wrapper for manipulating a canvas as though it were a simple kind of
  * terminal.
@@ -43,6 +45,13 @@ export class WebCurses {
     this.ctx.font = font;
 
     this.clear();
+  }
+
+  public getCenter() {
+    return <Point>{
+      x: Math.floor(this.horizontalTiles / 2),
+      y: Math.floor(this.verticalTiles / 2)
+    }
   }
 
   public clear(color?: string) {

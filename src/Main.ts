@@ -5,8 +5,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
   const canvas = <HTMLCanvasElement>document.getElementById('canvas');
   const fontSize = parseInt(canvas.dataset['fontSize']);
   const fontFace = canvas.dataset['fontFace'];
+  const debug = canvas.dataset['debug'] === 'true';
 
-  const game = new Game(canvas, fontSize, fontFace);
+  const game = new Game({
+    canvas: canvas,
+    debug: debug,
+    fontSize: fontSize,
+    fontFace: fontFace
+  });
   (<any>window)['Game'] = game;
 
 

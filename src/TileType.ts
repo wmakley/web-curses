@@ -1,3 +1,5 @@
+import * as Color from './Colors';
+
 export interface TileType {
   name: string;
   description: string;
@@ -24,3 +26,12 @@ export const Wall: TileType = {
   bgColor: '#333333',
   passable: false
 };
+
+export const OutOfBounds: TileType = {
+  name: 'OutOfBounds',
+  description: 'Out of bounds',
+  char: ' ',
+  color: Color.BLACK,
+  bgColor: Color.BLACK,
+  passable: false
+}

@@ -2,6 +2,7 @@ import { Actor } from './Actor';
 import { Point } from './Point';
 
 /**
+ * Data structure for all the Actors on the current map.
  * Needs to know the screen dimensions to generate keys into the associative
  * array of actor positions.
  */
@@ -9,7 +10,7 @@ export class ActorList {
   private sequential: Array<Actor>;
   private associative: { [position: number]: Actor; }
 
-  constructor(private width: number, private height: number) {
+  constructor(private readonly width: number, private readonly height: number) {
     this.sequential = [];
     this.associative = {};
   }

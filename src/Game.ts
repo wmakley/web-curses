@@ -13,15 +13,19 @@ import { Storage } from './Storage';
 import * as Point from './Point';
 
 
+export interface Config {
+  canvas: HTMLCanvasElement
+  debug: boolean
+  fontSize: number
+  fontFace?: string
+}
+
 /**
- * Main entry point. Owns all objects, and provides an API
- * for manipulating state that AI and player interaction
- * code can call into.
+ * Main entry point. Owns all objects.
  */
 export class Game {
   public debug: boolean;
 
-  private term: WebCurses;
   private renderer: GameRenderer;
   private storage: Storage;
   private eventHandler: Keyboard.EventHandler;
@@ -29,16 +33,13 @@ export class Game {
   private state: GameState;
 
   constructor(
-    private canvas: HTMLCanvasElement,
-    public readonly fontSize: number,
-    public readonly fontFace?: string
+    private readonly config: Config
   ) {
-    this.debug = canvas.dataset['debug'] === 'true';
+    this.debug = config.debug;
 
-    this.term = new WebCurses(canvas, fontSize, fontFace);
-    this.renderer = new GameRenderer(this.term);
+    this.renderer = new GameRenderer(config.canvas, config.fontSize, config.fontFace);
 
-    if (this.debug) console.log('Font: ' + fontSize + 'px ' + (fontFace || '') + '; ' + this.term.horizontalTiles + ' tiles x ' + this.term.verticalTiles + ' tiles');
+    if (this.debug) console.log('Font: ' + config.fontSize + 'px ' + (config.fontFace || '') + '; ' + this.renderer.getHorizontalTiles() + ' tiles x ' + this.renderer.getVerticalTiles() + ' tiles');
 
     this.storage = new Storage();
     if (!this.loadGame()) {
@@ -97,8 +98,11 @@ export class Game {
 
   public startNewGame() {
     this.storage.clear();
-    const map = new Map(this.term.horizontalTiles, this.term.verticalTiles);
-    const actorList = new ActorList(this.term.horizontalTiles, this.term.verticalTiles);
+    // TODO: the map width could actually be different from the screen!
+    const width = this.renderer.getHorizontalTiles(),
+          height = this.renderer.getVerticalTiles();
+    const map = new Map(width, height);
+    const actorList = new ActorList(width, height);
     const player = new Actor(ActorClass.Player, { x: 10, y: 10 }, 10);
     actorList.addActor(player);
     actorList.addActor(new Actor(ActorClass.HugeHollow, { x: 12, y: 12 }, 20));

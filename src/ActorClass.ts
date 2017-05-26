@@ -1,5 +1,5 @@
 import * as Command from './Command';
-import { Game } from './Game';
+import { GameState } from './GameState';
 
 export interface ActorClass {
   className: string
@@ -7,7 +7,7 @@ export interface ActorClass {
   description: string
   char: string
   color: string
-  update: (game: Game) => Array<Command.Command>
+  update: (state: GameState) => Array<Command.Command>
 }
 
 export const Player: ActorClass = {
@@ -16,7 +16,7 @@ export const Player: ActorClass = {
   description: 'This is you.',
   char: '@',
   color: '#FFFFFF',
-  update: (game: Game) => undefined
+  update: (state: GameState) => undefined
 }
 
 export const HugeHollow: ActorClass = {
@@ -25,10 +25,11 @@ export const HugeHollow: ActorClass = {
   description: 'It is a huge hollow. It is very scary.',
   char: 'H',
   color: '#FF0000',
-  update: (game: Game) => {
-    return [
-      new Command.ShowMessage("The huge hollow looks at you!")
-    ]
+  update: (state: GameState) => {
+    return undefined;
+    // return [
+    //   new Command.ShowMessage("The huge hollow looks at you!")
+    // ]
   }
 }
 

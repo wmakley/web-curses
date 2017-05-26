@@ -20,38 +20,38 @@ export class Storage {
     return gameState;
   }
 
-  public saveMap(name: string, map: Map) {
-    return this.saveObject('Map_' + name, Map.serialize(map));
-  }
+  // public saveMap(name: string, map: Map) {
+  //   return this.saveObject('Map_' + name, Map.serialize(map));
+  // }
 
-  public loadMap(name: string) {
-    const data = this.loadObject('Map_' + name);
-    if (data === undefined) return data;
-    const map = Map.deserialize(data);
-    return map;
-  }
+  // public loadMap(name: string) {
+  //   const data = this.loadObject('Map_' + name);
+  //   if (data === undefined) return data;
+  //   const map = Map.deserialize(data);
+  //   return map;
+  // }
 
-  public saveActorList(name: string, actorList: ActorList) {
-    const serialized = ActorList.serialize(actorList);
-    return this.saveObject('ActorList_' + name, serialized);
-  }
+  // public saveActorList(name: string, actorList: ActorList) {
+  //   const serialized = ActorList.serialize(actorList);
+  //   return this.saveObject('ActorList_' + name, serialized);
+  // }
 
-  public loadActorList(name: string) {
-    const data = this.loadObject('ActorList_' + name);
-    if (data === undefined) return data;
-    return ActorList.deserialize(data);
-  }
+  // public loadActorList(name: string) {
+  //   const data = this.loadObject('ActorList_' + name);
+  //   if (data === undefined) return data;
+  //   return ActorList.deserialize(data);
+  // }
 
   private saveObject(name: string, object: Object) {
     let stringRep = JSON.stringify(object);
-    console.log('Save data "' + name + "'");
+    // console.log('Save data "' + name + "'");
     return window.localStorage.setItem(name, stringRep);
   }
 
   // Always return undefined on failure
   private loadObject(name: string) {
     const data = window.localStorage.getItem(name);
-    console.log('Load data "' + name + "'");
+    // console.log('Load data "' + name + "'");
     if (data === null || data === undefined) return undefined;
     return JSON.parse(data);
   }
@@ -73,7 +73,7 @@ export class Storage {
   }
 
   public dataExists(name: string) {
-    const data = this.loadMap(name);
+    const data = this.loadGame(name);
     return (typeof data !== 'undefined' && data !== null);
   }
 }
