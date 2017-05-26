@@ -99,8 +99,8 @@ export class Game {
   public startNewGame() {
     this.storage.clear();
     // TODO: the map width could actually be different from the screen!
-    const width = this.renderer.getHorizontalTiles(),
-          height = this.renderer.getVerticalTiles();
+    const width = 1000,
+          height = 1000;
     const map = new Map(width, height);
     const actorList = new ActorList(width, height);
     const player = new Actor(ActorType.Player, { x: 10, y: 10 }, 10);

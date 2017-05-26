@@ -26,10 +26,10 @@ export class Map {
   }
 
   /**
-   * Returns OUT_OF_BOUNDS if the coordinates are invalid.
-   * @param x
-   * @param y
-   */
+  * Returns OUT_OF_BOUNDS if the coordinates are invalid.
+  * @param x
+  * @param y
+  */
   public tileAt(x: number, y: number) {
     if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
       return OUT_OF_BOUNDS;
@@ -47,28 +47,27 @@ export class Map {
   }
 
   /**
-   * Iterate over each tile in a 2D slice of the map,
-   * yielding each tile's coordinates RELATIVE TO THE SLICE
-   * (so zero-based) and the Tile itself to a callback.
-   * @param startX
-   * @param sliceWidth
-   * @param startY
-   * @param sliceHeight
-   * @param callback
-   */
+  * Iterate over each tile in a 2D slice of the map,
+  * yielding each tile's coordinates RELATIVE TO THE SLICE
+  * (so zero-based) and the Tile itself to a callback.
+  * @param startX
+  * @param sliceWidth
+  * @param startY
+  * @param sliceHeight
+  * @param callback
+  */
   public eachTileInSlice(
-    startX: number, sliceWidth: number,
-    startY: number, sliceHeight: number,
-    callback: (x: number, y: number, tile: Tile.Tile) => void)
+  startX: number, sliceWidth: number,
+  startY: number, sliceHeight: number,
+  callback: (x: number, y: number, tile: Tile.Tile) => void)
   {
-    let screenX = 0;
-    for (let x = startX; x < sliceWidth; x += 1) {
-      let screenY = 0;
-      for (let y = startY; y < sliceHeight; y += 1) {
-        callback(screenX, screenY, this.tileAt(x, y));
-        screenY += 1;
+    // console.log('map slice: X: (' + startX + '..' + (startX+sliceWidth) + ') Y: (' + startY + '..' + (startY+sliceHeight) + ')');
+    for (let screenX = 0; screenX < sliceWidth; screenX += 1) {
+      const mapX = startX + screenX;
+      for (let screenY = 0; screenY < sliceHeight; screenY += 1) {
+        const mapY = startY + screenY;
+        callback(screenX, screenY, this.tileAt(mapX, mapY));
       }
-      screenX += 1;
     }
   }
 
@@ -89,9 +88,9 @@ export class Map {
   }
 
   /**
-   * Turn raw json back into a Map instance by reconnecting tiles to their type classes.
-   * @param data A raw object from local storage
-   */
+  * Turn raw json back into a Map instance by reconnecting tiles to their type classes.
+  * @param data A raw object from local storage
+  */
   public static deserialize(data: any) {
     let tiles = data.tiles;
     let width = data.width;
