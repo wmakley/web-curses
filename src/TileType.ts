@@ -9,6 +9,15 @@ export interface TileType {
   passable: boolean;
 };
 
+export const OutOfBounds: TileType = {
+  name: 'OutOfBounds',
+  description: 'Out of bounds',
+  char: ' ',
+  color: Color.BLACK,
+  bgColor: Color.BLACK,
+  passable: false
+}
+
 export const Floor: TileType = {
   name: 'Floor',
   description: 'Floor',
@@ -27,11 +36,20 @@ export const Wall: TileType = {
   passable: false
 };
 
-export const OutOfBounds: TileType = {
-  name: 'OutOfBounds',
-  description: 'Out of bounds',
-  char: ' ',
-  color: Color.BLACK,
-  bgColor: Color.BLACK,
-  passable: false
-}
+export const Water: TileType = {
+  name: 'Water',
+  description: 'Water',
+  char: '~',
+  color: '#3333FF',
+  bgColor: '#000033',
+  passable: true
+};
+
+export const Snow: TileType = {
+  name: 'Snow',
+  description: 'Snow',
+  char: 'S',
+  color: Color.WHITE,
+  bgColor: '#666666',
+  passable: true
+};

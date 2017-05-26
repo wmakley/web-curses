@@ -8,13 +8,17 @@ export interface SimplifiedTile {
   type: string;
 }
 
+export function ofType(type: TileType.TileType) {
+  return <Tile>{
+    type: type
+  }
+}
+
 /**
  * Convert type to a string class name.
  */
 export function serialize(tile: Tile) {
-  const type = tile.type;
-  const simplified = { type: type.name };
-  return simplified;
+  return <SimplifiedTile>{ type: tile.type.name };
 }
 
 /**

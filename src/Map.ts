@@ -1,28 +1,69 @@
 import * as Tile from './Tile';
-import { Wall, Floor, OutOfBounds } from './TileType';
+import * as TileType from './TileType';
+import * as PerlinNoise from './PerlinNoise';
 
-export const OUT_OF_BOUNDS = <Tile.Tile>{ type: OutOfBounds };
+export const OUT_OF_BOUNDS = <Tile.Tile>{ type: TileType.OutOfBounds };
 
 /**
- * Basically just a container of a bunch of tiles.
- */
+* Basically just a container of a bunch of tiles.
+*/
 export class Map {
   protected tiles: Array<Tile.Tile>;
 
   constructor(public readonly width: number, public readonly height: number) {
     this.tiles = [];
-    var x, y, tile;
-    for (y = 0; y < height; y++) {
-      for (x = 0; x < width; x++) {
-        if (y === 4) {
-          tile = { type: Wall }
-        }
-        else {
-          tile = { type: Floor };
-        }
+    this.genPerlin();
+  }
+
+  /**
+   *
+   * @param callback A function that takes x and y coordinates, and returns a Tile
+   */
+  private generate(callback: (x: number, y: number) => Tile.Tile) {
+    console.log('generate map: width: ' + this.width + ' height: ' + this.height);
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const tile = callback(x, y);
         this.tiles.push(tile);
       }
     }
+  }
+
+  private genDefault() {
+    this.generate((x: number, y: number) => {
+      if (y === 4) {
+        return { type: TileType.Wall }
+      }
+      else {
+        return { type: TileType.Floor };
+      }
+    });
+  }
+
+  private genPerlin() {
+    this.generate((j: number, i: number) => {
+      const x = j / this.width;
+      const y = i / this.height;
+
+      const n = PerlinNoise.noise(10.0 * x, 10.0 * y, 0.8);
+
+      // water
+      if (n < 0.35) {
+        return Tile.ofType(TileType.Water);
+      }
+      // floors or plains
+      else if (n >= 0.35 && n < 0.6) {
+        return Tile.ofType(TileType.Floor);
+      }
+      // walls / mountains
+      else if (n >= 0.6 && n < 0.8) {
+        return Tile.ofType(TileType.Wall);
+      }
+      // ice / snow
+      else {
+        return Tile.ofType(TileType.Snow);
+      }
+    });
   }
 
   /**
