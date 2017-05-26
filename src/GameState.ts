@@ -23,7 +23,7 @@ export class GameState {
    * Prevent trying to load old data that is incompatible with a newer version of the game.
    * Bump whenever the save format changes.
    */
-  public static readonly VERSION = "0.1";
+  public static readonly VERSION = "0.2";
 
   public static serialize(gameState: GameState) {
     return {
@@ -35,7 +35,8 @@ export class GameState {
 
   public static deserialize(data: any) {
     if (typeof data['version'] === 'undefined' || data.version !== GameState.VERSION) {
-      throw "Game data version mismatch! Saved: " + data.version + ", Current: " + GameState.VERSION;
+      console.log("Game data version mismatch! Saved: " + data.version + ", Current: " + GameState.VERSION);
+      return undefined;
     }
     if (typeof data['map'] !== 'object' ||
       typeof data['actorList'] !== 'object') {
@@ -60,7 +61,7 @@ export class GameState {
   public moveActorInDirection(actor: Actor, direction: Direction) {
     const newPos = Point.moveInDirection(actor.pos, direction);
     if (!this.map.isPassable(newPos.x, newPos.y)) {
-      return [ MovementResult.Impassable, this.map.tileAt(newPos.x, newPos.y) ];
+      return [ MovementResult.Impassable, this.map.tileTypeAt(newPos.x, newPos.y) ];
     }
 
     let target = this.actorList.actorAtPosition(newPos);

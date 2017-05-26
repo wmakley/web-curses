@@ -1,7 +1,7 @@
 import * as Color from './Colors';
 
 export interface TileType {
-  name: string;
+  id: number;
   description: string;
   char: string;
   color: string;
@@ -10,7 +10,7 @@ export interface TileType {
 };
 
 export const OutOfBounds: TileType = {
-  name: 'OutOfBounds',
+  id: 0,
   description: 'Out of bounds',
   char: ' ',
   color: Color.BLACK,
@@ -19,7 +19,7 @@ export const OutOfBounds: TileType = {
 }
 
 export const Floor: TileType = {
-  name: 'Floor',
+  id: 1,
   description: 'Floor',
   char: '.',
   color: '#999999',
@@ -28,7 +28,7 @@ export const Floor: TileType = {
 };
 
 export const Wall: TileType = {
-  name: 'Wall',
+  id: 2,
   description: 'Wall',
   char: '#',
   color: '#CCCCCC',
@@ -37,7 +37,7 @@ export const Wall: TileType = {
 };
 
 export const Water: TileType = {
-  name: 'Water',
+  id: 3,
   description: 'Water',
   char: '~',
   color: '#3333FF',
@@ -46,10 +46,22 @@ export const Water: TileType = {
 };
 
 export const Snow: TileType = {
-  name: 'Snow',
+  id: 4,
   description: 'Snow',
   char: 'S',
   color: Color.WHITE,
   bgColor: '#666666',
   passable: true
 };
+
+const types: Array<TileType> = [
+  OutOfBounds,
+  Floor,
+  Wall,
+  Water,
+  Snow
+]
+
+export function getTypeById(id: number) {
+  return types[id];
+}

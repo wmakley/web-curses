@@ -1,7 +1,6 @@
 import { WebCurses } from './WebCurses';
 import { Map, OUT_OF_BOUNDS } from './Map';
-import { Tile } from './Tile';
-import { OutOfBounds } from './TileType';
+import { getTypeById as getTileType, OutOfBounds } from './TileType';
 import { Actor } from './Actor';
 import { GameState } from './GameState';
 import * as Color from './Colors';
@@ -53,11 +52,11 @@ export class GameRenderer {
     map.eachTileInSlice(
       startX, this.getHorizontalTiles(),
       startY, this.getVerticalTiles(),
-      (x: number, y: number, tile: Tile) => {
-        if (tile === OUT_OF_BOUNDS) {
+      (x: number, y: number, tileId: number) => {
+        if (tileId === OUT_OF_BOUNDS) {
           return;
         }
-        const tileType = tile.type;
+        const tileType = getTileType(tileId);
         this.curses.putChar(tileType.char, x, y, tileType.color, tileType.bgColor);
       }
     );

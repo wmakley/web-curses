@@ -1,11 +1,9 @@
-import { WebCurses } from './WebCurses';
 import { GameRenderer } from './GameRenderer';
 import { GameState } from './GameState';
 import { Actor } from './Actor';
 import * as ActorType from './ActorType';
 import { ActorList } from './ActorList';
 import { Map } from './Map';
-import { Tile } from './Tile';
 import * as Keyboard from './Keyboard';
 import * as Command from './Command';
 import { Direction } from './Direction';
@@ -102,6 +100,7 @@ export class Game {
     const width = 1000,
           height = 1000;
     const map = new Map(width, height);
+    map.genPerlin();
     const actorList = new ActorList(width, height);
     const player = new Actor(ActorType.Player, { x: 10, y: 10 }, 10);
     actorList.addActor(player);

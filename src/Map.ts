@@ -2,24 +2,23 @@ import * as Tile from './Tile';
 import * as TileType from './TileType';
 import * as PerlinNoise from './PerlinNoise';
 
-export const OUT_OF_BOUNDS = <Tile.Tile>{ type: TileType.OutOfBounds };
+export const OUT_OF_BOUNDS = TileType.OutOfBounds.id;
 
 /**
 * Basically just a container of a bunch of tiles.
 */
 export class Map {
-  protected tiles: Array<Tile.Tile>;
+  protected tiles: Array<number>;
 
   constructor(public readonly width: number, public readonly height: number) {
     this.tiles = [];
-    this.genPerlin();
   }
 
   /**
    *
    * @param callback A function that takes x and y coordinates, and returns a Tile
    */
-  private generate(callback: (x: number, y: number) => Tile.Tile) {
+  private generate(callback: (x: number, y: number) => number) {
     console.log('generate map: width: ' + this.width + ' height: ' + this.height);
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
@@ -32,27 +31,25 @@ export class Map {
   private genDefault() {
     this.generate((x: number, y: number) => {
       if (y === 4) {
-        return { type: TileType.Wall }
+        return TileType.Wall.id;
       }
       else {
-        return { type: TileType.Floor };
+        return TileType.Floor.id;
       }
     });
   }
 
-  private genPerlin() {
-    this.generate((j: number, i: number) => {
-      const x = j / this.width;
-      const y = i / this.height;
-
-      const n = PerlinNoise.noise(10.0 * x, 10.0 * y, 0.8);
+  public genPerlin() {
+    PerlinNoise.seed(Math.random());
+    this.generate((x: number, y: number) => {
+      const n = PerlinNoise.simplex3(x / 50, y / 50, 0.8);
 
       // water
-      if (n < 0.35) {
+      if (n < 0.25) {
         return Tile.ofType(TileType.Water);
       }
       // floors or plains
-      else if (n >= 0.35 && n < 0.6) {
+      else if (n >= 0.25 && n < 0.6) {
         return Tile.ofType(TileType.Floor);
       }
       // walls / mountains
@@ -78,7 +75,11 @@ export class Map {
     return this.tiles[this.width * y + x];
   }
 
-  public eachTile(callback: (x: number, y: number, tile: Tile.Tile) => void) {
+  public tileTypeAt(x: number, y: number) {
+    return TileType.getTypeById(this.tileAt(x, y));
+  }
+
+  public eachTile(callback: (x: number, y: number, tile: number) => void) {
     var x, y, tile, result;
     for (x = 0; x < this.width; x++) {
       for (y = 0; y < this.height; y++) {
@@ -90,7 +91,7 @@ export class Map {
   /**
   * Iterate over each tile in a 2D slice of the map,
   * yielding each tile's coordinates RELATIVE TO THE SLICE
-  * (so zero-based) and the Tile itself to a callback.
+  * (so zero-based) and the tile's type ID to a callback.
   * @param startX
   * @param sliceWidth
   * @param startY
@@ -98,9 +99,9 @@ export class Map {
   * @param callback
   */
   public eachTileInSlice(
-  startX: number, sliceWidth: number,
-  startY: number, sliceHeight: number,
-  callback: (x: number, y: number, tile: Tile.Tile) => void)
+    startX: number, sliceWidth: number,
+    startY: number, sliceHeight: number,
+    callback: (x: number, y: number, tileId: number) => void)
   {
     // console.log('map slice: X: (' + startX + '..' + (startX+sliceWidth) + ') Y: (' + startY + '..' + (startY+sliceHeight) + ')');
     for (let screenX = 0; screenX < sliceWidth; screenX += 1) {
@@ -113,8 +114,8 @@ export class Map {
   }
 
   public isPassable(x: number, y: number) {
-    const tile = this.tileAt(x, y);
-    return tile.type.passable;
+    const tileType = this.tileTypeAt(x, y);
+    return tileType.passable;
   }
 
 
@@ -140,12 +141,12 @@ export class Map {
       console.log('bad map data: ' + data);
       return null;
     }
-    let deserializedTiles = <Array<Tile.Tile>>[];
-    for (let i = 0; i < tiles.length; i++) {
-      deserializedTiles.push(Tile.deserialize(tiles[i]));
-    }
+    // let deserializedTiles = <Array<number>>[];
+    // for (let i = 0; i < tiles.length; i++) {
+    //   deserializedTiles.push(Tile.deserialize(tiles[i]));
+    // }
     let map = new Map(data.width, data.height);
-    map.tiles = deserializedTiles;
+    map.tiles = <Array<number>>tiles;
     return map;
   }
 }

@@ -1,5 +1,5 @@
 import { Actor } from './Actor';
-import { Tile } from './Tile';
+import { TileType } from './TileType';
 import { GameState, MovementResult } from './GameState';
 import * as Point from './Point';
 import * as Direction from './Direction';
@@ -25,8 +25,8 @@ export class PlayerMovement implements Command {
     if (result === MovementResult.Impassable) {
       // don't end the turn, just show the message
       this.oldPos = this.player.pos;
-      const tile = <Tile>arg;
-      game.showMessage("You hit your head on the " + tile.type.description + ".");
+      const tileType = <TileType>arg;
+      game.showMessage("You hit your head on the " + tileType.description + ".");
     }
     else if (result === MovementResult.Occupied) {
       this.oldPos = this.player.pos;
