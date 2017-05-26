@@ -64,9 +64,9 @@ export class GameRenderer {
   }
 
   private drawActor(actor: Actor, translateX: number, translateY: number) {
-    const actorClass = actor.actorClass;
+    const actorType = actor.type;
     const x = actor.pos.x + translateX;
     const y = actor.pos.y + translateY;
-    this.curses.putChar(actorClass.char, x, y, actorClass.color, this.bgColor);
+    this.curses.putChar(actorType.char, x, y, actorType.color, this.bgColor);
   }
 }

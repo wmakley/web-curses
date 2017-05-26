@@ -1,11 +1,11 @@
 import { Point } from './Point'
 import { Map } from './Map'
-import * as ActorClass from './ActorClass'
+import * as ActorType from './ActorType'
 
 
 export class Actor {
   constructor(
-    public readonly actorClass: ActorClass.ActorClass,
+    public readonly type: ActorType.ActorType,
     public pos: Point,
     public hp: number
   ) {}
@@ -15,23 +15,23 @@ export class Actor {
   }
 
   public attack(other: Actor) {
-    console.log('You attack the ' + other.actorClass.name + '!');
+    console.log('You attack the ' + other.type.name + '!');
   }
 
   public update(game: any) {
-    return this.actorClass.update(game);
+    return this.type.update(game);
   }
 
   public toString() {
-    return 'Actor(char=' + this.actorClass.char + ', pos={x:' + this.pos.x + ', y:' + this.pos.y + '}, color=' + this.actorClass.color + ')';
+    return 'Actor(char=' + this.type.char + ', pos={x:' + this.pos.x + ', y:' + this.pos.y + '}, color=' + this.type.color + ')';
   }
 
   public static serialize(actor: Actor) {
     let clone = <any>{};
     for (let key in actor) {
       if (!actor.hasOwnProperty(key)) continue;
-      if (key === 'actorClass') {
-        clone.className = actor.actorClass.className;
+      if (key === 'type') {
+        clone.typeName = actor.type.typeName;
       } else {
         clone[key] = (<any>actor)[key];
       }
@@ -40,19 +40,19 @@ export class Actor {
   }
 
   public static deserialize(data: any) {
-    if (!data.pos || typeof data.className !== 'string' || typeof data.hp !== 'number') {
+    if (!data.pos || typeof data.typeName !== 'string' || typeof data.hp !== 'number') {
       console.log('bad actor data: ' + data);
       return null;
     }
 
-    // re-establish reference to ActorClass
-    const className = <string>data.className;
+    // re-establish reference to type
+    const typeName = <string>data.typeName;
     const pos = <Point>data.pos;
-    const actorClass = ActorClass.getClassByName(className);
-    if (actorClass === undefined) {
-      console.log('Unknown actor class: ' + className);
+    const type = ActorType.getClassByName(typeName);
+    if (type === undefined) {
+      console.log('Unknown actor type: ' + typeName);
       return undefined;
     }
-    return new Actor(actorClass, pos, data.hp);
+    return new Actor(type, pos, data.hp);
   }
 }

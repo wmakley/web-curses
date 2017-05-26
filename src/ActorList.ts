@@ -54,7 +54,7 @@ export class ActorList {
     let player;
     for (let i = 0; i < this.sequential.length; i += 1) {
       const elt = this.get(i);
-      if (elt.actorClass.className === "Player") {
+      if (elt.type.typeName === "Player") {
         player = elt;
         break;
       }

@@ -77,7 +77,7 @@ export class GameState {
   }
 
   public combat(actor: Actor, target: Actor) {
-    this.showMessage("You attack the " + target.actorClass.name + "!");
+    this.showMessage("You attack the " + target.type.name + "!");
   }
 
   /**

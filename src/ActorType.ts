@@ -1,8 +1,8 @@
 import * as Command from './Command';
 import { GameState } from './GameState';
 
-export interface ActorClass {
-  className: string
+export interface ActorType {
+  typeName: string
   name: string
   description: string
   char: string
@@ -10,8 +10,8 @@ export interface ActorClass {
   update: (state: GameState) => Array<Command.Command>
 }
 
-export const Player: ActorClass = {
-  className: 'Player',
+export const Player: ActorType = {
+  typeName: 'Player',
   name: 'Player',
   description: 'This is you.',
   char: '@',
@@ -19,8 +19,8 @@ export const Player: ActorClass = {
   update: (state: GameState) => undefined
 }
 
-export const HugeHollow: ActorClass = {
-  className: 'HugeHollow',
+export const HugeHollow: ActorType = {
+  typeName: 'HugeHollow',
   name: 'Huge Hollow',
   description: 'It is a huge hollow. It is very scary.',
   char: 'H',
@@ -33,9 +33,9 @@ export const HugeHollow: ActorClass = {
   }
 }
 
-let classes: { [name: string]:ActorClass } = { };
-classes[Player.className] = Player;
-classes[HugeHollow.className] = HugeHollow;
+let classes: { [typeName: string]:ActorType } = { };
+classes[Player.typeName] = Player;
+classes[HugeHollow.typeName] = HugeHollow;
 
 export function getClassByName(name: string) {
   return classes[name];
