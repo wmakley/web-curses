@@ -14,6 +14,25 @@ export function clone(point: Point) {
   };
 }
 
+/**
+ * Convert a point to a more compressed tuple Array.
+ */
+export function serialize(point: Point) : Array<number> {
+  return [point.x, point.y];
+}
+
+/**
+ * Convert tuple Array to a Point object.
+ */
+export function deserialize(tuple: Array<number>): Point {
+  if (tuple.length !== 2) {
+    throw 'Input should be an array of length 2';
+  }
+  if (typeof tuple[0] !== 'number' || typeof tuple[1] !== 'number') {
+    throw 'One of the array elements was not a number';
+  }
+  return <Point>{ x: tuple[0], y: tuple[1] };
+}
 
 export function moveInDirection(point: Point, direction: Direction) {
   switch (direction) {

@@ -36,14 +36,16 @@ export class Game {
 
     this.renderer = new GameRenderer(config.canvas, config.fontSize, config.fontFace);
 
-    if (this.debug) console.log('Font: ' + config.fontSize + 'px ' + (config.fontFace || '') + '; ' + this.renderer.getHorizontalTiles() + ' tiles x ' + this.renderer.getVerticalTiles() + ' tiles');
+    if (this.debug) {
+      console.log('Font: ' + config.fontSize + 'px ' + (config.fontFace || '') + '; ' + this.renderer.getHorizontalTiles() + ' tiles x ' + this.renderer.getVerticalTiles() + ' tiles');
+    }
 
     this.storage = new Storage();
     if (!this.loadGame()) {
       this.startNewGame();
     }
 
-    let player = this.state.player;
+    const player = this.state.player;
     const moveUpCommand = new Command.PlayerMovement(player, Direction.Up);
     const moveDownCommand = new Command.PlayerMovement(player, Direction.Down);
     const moveLeftCommand = new Command.PlayerMovement(player, Direction.Left);

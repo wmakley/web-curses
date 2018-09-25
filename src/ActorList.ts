@@ -101,7 +101,7 @@ export class ActorList {
 
     let actorList = new ActorList(data.width, data.height);
     for (let i = 0; i < data.sequential.length; i++) {
-      let actor = Actor.deserialize(data.sequential[i]);
+      const actor = Actor.deserialize(data.sequential[i]);
       if (actor === undefined) {
         actorList = undefined;
         break;

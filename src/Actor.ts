@@ -1,15 +1,14 @@
-import { Point } from './Point'
-import * as ActorType from './ActorType'
-
+import * as Point from './Point'
+import * as ActorType from './ActorType';
 
 export class Actor {
   constructor(
     public readonly type: ActorType.ActorType,
-    public pos: Point,
+    public pos: Point.Point,
     public hp: number
   ) {}
 
-  public setPos(pos: Point) {
+  public setPos(pos: Point.Point) {
     this.pos = pos;
   }
 
@@ -26,11 +25,13 @@ export class Actor {
   }
 
   public static serialize(actor: Actor) {
-    let clone = <any>{};
-    for (let key in actor) {
+    const clone = <any>{};
+    for (const key in actor) {
       if (!actor.hasOwnProperty(key)) continue;
       if (key === 'type') {
         clone.typeId = actor.type.id;
+      } else if (key === 'pos') {
+        clone[key] = Point.serialize(actor[key])
       } else {
         clone[key] = (<any>actor)[key];
       }
@@ -46,7 +47,7 @@ export class Actor {
 
     // re-establish reference to type
     const typeId = <string>data.typeId;
-    const pos = <Point>data.pos;
+    const pos = Point.deserialize(<Array<number>>data.pos);
     const type = ActorType.getClassById(typeId);
     if (type === undefined) {
       console.log('Unknown actor type: ' + typeId);

@@ -23,7 +23,7 @@ export class GameState {
    * Prevent trying to load old data that is incompatible with a newer version of the game.
    * Bump whenever the save format changes.
    */
-  public static readonly VERSION = "0.3";
+  public static readonly VERSION = "0.4";
 
   public static serialize(gameState: GameState) {
     return {

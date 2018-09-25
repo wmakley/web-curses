@@ -26,7 +26,7 @@ export function reverse(direction: Direction) {
 }
 
 export function description(direction: Direction) {
-    switch (direction) {
+  switch (direction) {
     case Direction.Up:
       return "Up";
     case Direction.Down:

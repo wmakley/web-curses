@@ -1,3 +1,8 @@
+/**
+ * Tiles are represented only as a number, which references
+ * the id of a TileType.
+ */
+
 import * as TileType from './TileType';
 
 export function ofType(type: TileType.TileType) {
