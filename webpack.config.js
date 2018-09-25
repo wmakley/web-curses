@@ -1,35 +1,40 @@
-var path = require("path");
+const path = require("path");
 
-module.exports = {
-  entry: "./src/Main.ts",
-  output: {
-    filename: "bundle.js",
-    path: __dirname + "/dist"
-  },
+module.exports = function (env, argv) {
+  const PRODUCTION = (argv.mode === "production");
 
-  // Enable sourcemaps for debugging webpack's output.
-  devtool: "source-map",
-
-  resolve: {
-    // Add '.ts' as resolvable extension.
-    extensions: [".webpack.js", ".web.js", ".ts", ".js"]
-  },
-
-  module: {
-    loaders: [
-    // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-    { test: /\.tsx?$/, loader: "awesome-typescript-loader" }
-    ]
-  },
-
-  devServer: {
-    contentBase: path.join(__dirname, "static"),
-    port: 9000,
-    publicPath: "/dist/",
-    overlay: {
-      warnings: true,
-      errors: true
+  return {
+    entry: "./src/Main.ts",
+    output: {
+      filename: "bundle.js",
+      path: path.join(__dirname, "dist")
     },
-    watchContentBase: true
-  }
+
+    devtool: PRODUCTION ? "source-map" : "inline-source-map",
+
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: "ts-loader",
+          exclude: /node_modules/
+        }
+      ]
+    },
+
+    resolve: {
+      extensions: [".tsx", ".ts", ".js"]
+    },
+
+    devServer: {
+      contentBase: path.join(__dirname, "static"),
+      port: 9000,
+      publicPath: "/dist/",
+      overlay: {
+        warnings: true,
+        errors: true
+      },
+      watchContentBase: true
+    }
+  };
 };
