@@ -31,9 +31,7 @@ export function getKey(event: KeyboardEvent) {
 
   const code = event.keyCode || event.which || event.charCode;
   if (code === undefined || code === null) { return undefined; }
-  const key = CODES[code];
-  if (key === undefined || key === null) { return undefined; }
-  return key;
+  return CODES[code];
 }
 
 

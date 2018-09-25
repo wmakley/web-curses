@@ -31,7 +31,7 @@ export class Actor {
     for (let key in actor) {
       if (!actor.hasOwnProperty(key)) continue;
       if (key === 'type') {
-        clone.typeName = actor.type.typeName;
+        clone.typeId = actor.type.id;
       } else {
         clone[key] = (<any>actor)[key];
       }
@@ -40,17 +40,17 @@ export class Actor {
   }
 
   public static deserialize(data: any) {
-    if (!data.pos || typeof data.typeName !== 'string' || typeof data.hp !== 'number') {
+    if (!data.pos || typeof data.typeId !== 'string' || typeof data.hp !== 'number') {
       console.log('bad actor data: ' + data);
-      return null;
+      return undefined;
     }
 
     // re-establish reference to type
-    const typeName = <string>data.typeName;
+    const typeId = <string>data.typeId;
     const pos = <Point>data.pos;
-    const type = ActorType.getClassByName(typeName);
+    const type = ActorType.getClassById(typeId);
     if (type === undefined) {
-      console.log('Unknown actor type: ' + typeName);
+      console.log('Unknown actor type: ' + typeId);
       return undefined;
     }
     return new Actor(type, pos, data.hp);

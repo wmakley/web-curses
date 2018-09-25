@@ -1,4 +1,5 @@
 import { Actor } from './Actor';
+import { Player } from './ActorType';
 import { Point } from './Point';
 
 /**
@@ -12,7 +13,7 @@ export class ActorList {
 
   constructor(private readonly width: number, private readonly height: number) {
     this.sequential = [];
-    this.associative = {};
+    this.associative = Object.create(null);
   }
 
   public addActor(actor: Actor) {
@@ -42,7 +43,10 @@ export class ActorList {
     if (actor === undefined) {
       throw 'Actor not found at old position!';
     }
-    delete this.associative[oldKey];
+    // This is much faster than delete, and the object will never grow
+    // to be larger than the size of the current map. I could definitely
+    // imagine a different data structure though.
+    this.associative[oldKey] = undefined;
     this.associative[newKey] = actor;
   }
 
@@ -54,7 +58,7 @@ export class ActorList {
     let player;
     for (let i = 0; i < this.sequential.length; i += 1) {
       const elt = this.get(i);
-      if (elt.type.typeName === "Player") {
+      if (elt.type === Player) {
         player = elt;
         break;
       }

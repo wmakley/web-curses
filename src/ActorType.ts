@@ -2,7 +2,7 @@ import * as Command from './Command';
 import { GameState } from './GameState';
 
 export interface ActorType {
-  typeName: string
+  id: string
   name: string
   description: string
   char: string
@@ -11,7 +11,7 @@ export interface ActorType {
 }
 
 export const Player: ActorType = {
-  typeName: 'Player',
+  id: 'Player',
   name: 'Player',
   description: 'This is you.',
   char: '@',
@@ -20,7 +20,7 @@ export const Player: ActorType = {
 }
 
 export const HugeHollow: ActorType = {
-  typeName: 'HugeHollow',
+  id: 'HugeHollow',
   name: 'Huge Hollow',
   description: 'It is a huge hollow. It is very scary.',
   char: 'H',
@@ -33,10 +33,10 @@ export const HugeHollow: ActorType = {
   }
 }
 
-let classes: { [typeName: string]:ActorType } = { };
-classes[Player.typeName] = Player;
-classes[HugeHollow.typeName] = HugeHollow;
+let classes: { [id: string]:ActorType } = { };
+classes[Player.id] = Player;
+classes[HugeHollow.id] = HugeHollow;
 
-export function getClassByName(name: string) {
-  return classes[name];
+export function getClassById(id: string) {
+  return classes[id];
 }

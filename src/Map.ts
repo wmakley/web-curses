@@ -139,7 +139,7 @@ export class Map {
     let height = data.height;
     if (!tiles || typeof tiles !== 'object' || typeof width !== 'number' || typeof height !== 'number' || typeof tiles.length !== 'number') {
       console.log('bad map data: ' + data);
-      return null;
+      return undefined;
     }
     // let deserializedTiles = <Array<number>>[];
     // for (let i = 0; i < tiles.length; i++) {

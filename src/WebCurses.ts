@@ -1,4 +1,5 @@
 import { Point } from './Point';
+import { BLACK } from './Colors';
 
 /**
  * Wrapper for manipulating a canvas as though it were a simple kind of
@@ -26,6 +27,8 @@ export class WebCurses {
     this.fontXCorrection = 2.5;
     this.fontYCorrection = -2.6;
 
+    // For "retina" displays: increase the dimensions, but scale to original size using CSS
+    // and apply an appropriate scaling factor to the context.
     if (typeof window.devicePixelRatio === 'number') {
       canvas.style.width = canvas.width.toString() + 'px';
       canvas.style.height = canvas.height.toString() + 'px';
@@ -55,7 +58,7 @@ export class WebCurses {
   }
 
   public clear(color?: string) {
-    this.ctx.fillStyle = color || '#000000';
+    this.ctx.fillStyle = color || BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
