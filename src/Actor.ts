@@ -1,5 +1,4 @@
 import { Point } from './Point'
-import { Map } from './Map'
 import * as ActorType from './ActorType'
 
 

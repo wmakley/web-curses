@@ -8,7 +8,6 @@ import * as Keyboard from './Keyboard';
 import * as Command from './Command';
 import { Direction } from './Direction';
 import { Storage } from './Storage';
-import * as Point from './Point';
 
 
 export interface Config {

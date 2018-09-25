@@ -4,7 +4,6 @@ import { TileType, getTypeById as getTileType } from './TileType';
 import { Actor } from './Actor';
 import { GameState } from './GameState';
 import * as Color from './Colors';
-import * as Point from './Point';
 
 
 export class GameRenderer {

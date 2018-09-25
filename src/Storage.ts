@@ -1,6 +1,3 @@
-import { Map } from './Map';
-import { Actor } from './Actor';
-import { ActorList } from './ActorList';
 import { GameState } from './GameState';
 
 /**
@@ -19,28 +16,6 @@ export class Storage {
     const gameState = GameState.deserialize(data);
     return gameState;
   }
-
-  // public saveMap(name: string, map: Map) {
-  //   return this.saveObject('Map_' + name, Map.serialize(map));
-  // }
-
-  // public loadMap(name: string) {
-  //   const data = this.loadObject('Map_' + name);
-  //   if (data === undefined) return data;
-  //   const map = Map.deserialize(data);
-  //   return map;
-  // }
-
-  // public saveActorList(name: string, actorList: ActorList) {
-  //   const serialized = ActorList.serialize(actorList);
-  //   return this.saveObject('ActorList_' + name, serialized);
-  // }
-
-  // public loadActorList(name: string) {
-  //   const data = this.loadObject('ActorList_' + name);
-  //   if (data === undefined) return data;
-  //   return ActorList.deserialize(data);
-  // }
 
   private saveObject(name: string, object: Object) {
     let stringRep = JSON.stringify(object);
