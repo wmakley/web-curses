@@ -10,6 +10,7 @@ canvas-based Roguelike engine. :)
 * Move around a randomly-generated static landscape of rivers and mountains. (Based on a perlin noise tutorial.)
 * Save and load from local storage!
 * Bump into a monster.
+* "Retina" display support.
 
 ## Running
 
