@@ -5,13 +5,13 @@ canvas-based Roguelike engine.
 
 ## Running
 
-Development environment:
+**Development environment:**
 
     npm install
     npm run server
 
 Open: http://localhost:9000
 
-Production build:
+**Production build:**
 
     npm run build
