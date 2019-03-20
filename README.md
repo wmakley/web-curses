@@ -3,6 +3,8 @@
 Fun project to learn TypeScript and Webpack by building an HTML 5
 canvas-based Roguelike engine. :)
 
+**[Click here for a live demo.](https://web-curses.netlify.com/)**
+
 **Current features:**
 
 * Move around a randomly-generated static landscape of rivers and mountains. (Based on a perlin noise tutorial.)
