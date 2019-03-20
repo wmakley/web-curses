@@ -1,12 +1,12 @@
 # Web Curses
 
-Setup:
+Development environment:
 
     npm install
-    npm run start
+    npm run server
 
 Open: http://localhost:9000
 
-Build:
+Production build:
 
     npm run build
