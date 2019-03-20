@@ -23,3 +23,7 @@ Open: http://localhost:9000
 **Production build:**
 
     npm run build
+
+## Known Issues
+
+* Saving and loading doesn't work quite right in live demo.
