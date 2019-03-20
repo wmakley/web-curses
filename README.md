@@ -1,7 +1,13 @@
 # Web Curses
 
 Fun project to learn TypeScript and Webpack by building an HTML 5
-canvas-based Roguelike engine.
+canvas-based Roguelike engine. :)
+
+**Current features:**
+
+* Move around a randomly-generated static landscape of rivers and mountains. (Based on a perlin noise tutorial.)
+* Save and load from local storage!
+* Bump into a monster.
 
 ## Running
 
