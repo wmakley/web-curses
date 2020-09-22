@@ -1,53 +1,53 @@
-import { Actor } from './Actor';
-import { Player } from './ActorType';
+import Entity from './Entity';
+import { Player } from './EntityType';
 import { Point } from './Point';
 
 /**
  * Data structure for all the Actors on the current map.
  * Needs to know the screen dimensions to generate keys into the associative
- * array of actor positions.
+ * array of entity positions.
  */
-export class ActorList {
-  private sequential: Array<Actor>;
-  private associative: { [position: number]: Actor; }
+export default class EntityList {
+  private sequential: Array<Entity>;
+  private associative: { [position: number]: Entity; }
 
   constructor(private readonly width: number, private readonly height: number) {
     this.sequential = [];
     this.associative = Object.create(null);
   }
 
-  public addActor(actor: Actor) {
-    this.sequential.push(actor);
-    let key = this.key(actor.pos);
-    this.associative[key] = actor;
+  public addEntity(entity: Entity) {
+    this.sequential.push(entity);
+    let key = this.key(entity.pos);
+    this.associative[key] = entity;
     return this.sequential.length - 1;
   }
 
-  public removeActor(actor: Actor) {
-    const key = this.key(actor.pos);
-    if (this.associative[key] === actor) {
+  public removeEntity(entity: Entity) {
+    const key = this.key(entity.pos);
+    if (this.associative[key] === entity) {
       delete this.associative[key];
     }
     for (let i = 0; i < this.sequential.length; i++) {
-      if (this.sequential[i] === actor) {
+      if (this.sequential[i] === entity) {
         this.sequential.splice(i, 1);
         break;
       }
     }
   }
 
-  public actorMoved(oldPos: Point, newPos: Point) {
+  public entityMoved(oldPos: Point, newPos: Point) {
     const oldKey = this.key(oldPos);
     const newKey = this.key(newPos);
-    const actor = this.associative[oldKey];
-    if (actor === undefined) {
-      throw 'Actor not found at old position!';
+    const entity = this.associative[oldKey];
+    if (entity === undefined) {
+      throw 'Entity not found at old position!';
     }
     // This is much faster than delete, and the object will never grow
     // to be larger than the size of the current map. I could definitely
     // imagine a different data structure though.
     this.associative[oldKey] = undefined;
-    this.associative[newKey] = actor;
+    this.associative[newKey] = entity;
   }
 
   public get(index: number) {
@@ -66,14 +66,14 @@ export class ActorList {
     return player;
   }
 
-  public actorAtPosition(position: Point) {
+  public entityAtPosition(position: Point) {
     const key = this.key(position);
     return this.associative[key];
   }
 
-  public forEach(callback: (actor: Actor, index: number) => void, thisArg?: any) {
-    this.sequential.forEach((actor, index) => {
-      const result = callback.call(thisArg, actor, index);
+  public forEach(callback: (entity: Entity, index: number) => void, thisArg?: any) {
+    this.sequential.forEach((entity, index) => {
+      const result = callback.call(thisArg, entity, index);
       return result;
     });
   }
@@ -82,33 +82,33 @@ export class ActorList {
     return this.width * point.y + point.x;
   }
 
-  public static serialize(actorList: ActorList) {
+  public static serialize(entityList: EntityList) {
     // save only the sequential Array and rebuild associative on deserialize
-    const actors = actorList.sequential.map((actor) => {
-      return Actor.serialize(actor);
+    const entities = entityList.sequential.map((entity) => {
+      return Entity.serialize(entity);
     });
 
-    return { width: actorList.width, height: actorList.height, sequential: actors };
+    return { width: entityList.width, height: entityList.height, sequential: entities };
   }
 
   public static deserialize(data: any) {
     if (typeof data.sequential !== 'object' ||
       typeof data.width !== 'number' ||
       typeof data.height !== 'number') {
-      console.log('bad actorList data: ' + data);
+      console.log('bad entityList data: ' + data);
       return undefined;
     }
 
-    let actorList = new ActorList(data.width, data.height);
+    let entityList = new EntityList(data.width, data.height);
     for (let i = 0; i < data.sequential.length; i++) {
-      const actor = Actor.deserialize(data.sequential[i]);
-      if (actor === undefined) {
-        actorList = undefined;
+      const entity = Entity.deserialize(data.sequential[i]);
+      if (entity === undefined) {
+        entityList = undefined;
         break;
       }
-      actorList.addActor(actor);
+      entityList.addEntity(entity);
     }
 
-    return actorList;
+    return entityList;
   }
 }

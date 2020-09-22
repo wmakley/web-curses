@@ -1,18 +1,18 @@
 import * as Point from './Point'
-import * as ActorType from './ActorType';
+import * as EntityType from './EntityType';
 
-export class Actor {
+export default class Entity {
   constructor(
-    public readonly type: ActorType.ActorType,
+    public readonly type: EntityType.EntityType,
     public pos: Point.Point,
     public hp: number
-  ) {}
+  ) { }
 
   public setPos(pos: Point.Point) {
     this.pos = pos;
   }
 
-  public attack(other: Actor) {
+  public attack(other: Entity) {
     console.log('You attack the ' + other.type.name + '!');
   }
 
@@ -21,10 +21,10 @@ export class Actor {
   }
 
   public toString() {
-    return 'Actor(char=' + this.type.char + ', pos={x:' + this.pos.x + ', y:' + this.pos.y + '}, color=' + this.type.color + ')';
+    return 'Entity(char=' + this.type.char + ', pos={x:' + this.pos.x + ', y:' + this.pos.y + '}, color=' + this.type.color + ')';
   }
 
-  public static serialize(actor: Actor) {
+  public static serialize(actor: Entity) {
     const clone = <any>{};
     for (const key in actor) {
       if (!actor.hasOwnProperty(key)) continue;
@@ -48,11 +48,11 @@ export class Actor {
     // re-establish reference to type
     const typeId = <string>data.typeId;
     const pos = Point.deserialize(<Array<number>>data.pos);
-    const type = ActorType.getClassById(typeId);
+    const type = EntityType.getClassById(typeId);
     if (type === undefined) {
       console.log('Unknown actor type: ' + typeId);
       return undefined;
     }
-    return new Actor(type, pos, data.hp);
+    return new Entity(type, pos, data.hp);
   }
 }

@@ -1,6 +1,6 @@
 import { Map } from './Map';
-import { ActorList } from './ActorList';
-import { Actor } from './Actor';
+import EntityList from './EntityList';
+import Entity from './Entity';
 import * as Point from './Point';
 import { Direction } from './Direction';
 import * as Command from './Command';
@@ -13,10 +13,10 @@ export enum MovementResult { Impassable, Occupied, Success }
  * Container for all game objects. Designed to be mutated and saved/loaded.
  */
 export class GameState {
-  public readonly player: Actor;
+  public readonly player: Entity;
 
-  constructor(public map: Map, public actorList: ActorList) {
-    this.player = actorList.getPlayer();
+  constructor(public map: Map, public entityList: EntityList) {
+    this.player = entityList.getPlayer();
   }
 
   /**
@@ -29,7 +29,7 @@ export class GameState {
     return {
       version: GameState.VERSION,
       map: Map.serialize(gameState.map),
-      actorList: ActorList.serialize(gameState.actorList)
+      entityList: EntityList.serialize(gameState.entityList)
     }
   }
 
@@ -39,55 +39,55 @@ export class GameState {
       return undefined;
     }
     if (typeof data['map'] !== 'object' ||
-      typeof data['actorList'] !== 'object') {
+      typeof data['entityList'] !== 'object') {
       throw "bad GameState data";
     }
 
     const map = Map.deserialize(data.map);
-    const actorList = ActorList.deserialize(data.actorList);
+    const entityList = EntityList.deserialize(data.entityList);
 
-    return new GameState(map, actorList);
+    return new GameState(map, entityList);
   }
 
   /**
-   * Try move an Actor in a direction, returning:
+   * Try move an Entity in a direction, returning:
    * [ MovementResult.Impassable, Tile ] when the destination is impassable
-   * [ MovementResult.Occupied, Actor ] when there is already in actor in the destination
+   * [ MovementResult.Occupied, Entity ] when there is already in entity in the destination
    * [ MovementResult.Success, true ] on success
    *
-   * @param actor
+   * @param entity
    * @param direction
    */
-  public moveActorInDirection(actor: Actor, direction: Direction) {
-    const newPos = Point.moveInDirection(actor.pos, direction);
+  public moveEntityInDirection(entity: Entity, direction: Direction) {
+    const newPos = Point.moveInDirection(entity.pos, direction);
     if (!this.map.isPassable(newPos.x, newPos.y)) {
-      return [ MovementResult.Impassable, this.map.tileTypeAt(newPos.x, newPos.y) ];
+      return [MovementResult.Impassable, this.map.tileTypeAt(newPos.x, newPos.y)];
     }
 
-    let target = this.actorList.actorAtPosition(newPos);
+    let target = this.entityList.entityAtPosition(newPos);
     if (target !== undefined) {
-      return [ MovementResult.Occupied, target ];
+      return [MovementResult.Occupied, target];
     }
 
-    const oldPos = Point.clone(actor.pos);
-    actor.setPos(newPos);
-    this.actorList.actorMoved(oldPos, newPos);
+    const oldPos = Point.clone(entity.pos);
+    entity.setPos(newPos);
+    this.entityList.entityMoved(oldPos, newPos);
 
-    return [ MovementResult.Success, oldPos ];
+    return [MovementResult.Success, oldPos];
   }
 
   /**
-   * Unsafely move an actor to a point, regardless of whether that point is valid.
-   * @param actor
+   * Unsafely move an entity to a point, regardless of whether that point is valid.
+   * @param entity
    * @param point
    */
-  public unsafelyMoveActorToPoint(actor: Actor, point: Point.Point) {
-    const oldPos = actor.pos;
-    actor.setPos(point);
-    this.actorList.actorMoved(oldPos, point);
+  public unsafelyMoveEntityToPoint(entity: Entity, point: Point.Point) {
+    const oldPos = entity.pos;
+    entity.setPos(point);
+    this.entityList.entityMoved(oldPos, point);
   }
 
-  public combat(actor: Actor, target: Actor) {
+  public combat(entity: Entity, target: Entity) {
     this.showMessage("You attack the " + target.type.name + "!");
   }
 
@@ -107,12 +107,12 @@ export class GameState {
   }
 
   public endPlayerTurn() {
-    this.updateAllActors();
+    this.updateAllEntities();
   }
 
-  private updateAllActors() {
-    this.actorList.forEach((actor) => {
-      const commands = actor.update(this);
+  private updateAllEntities() {
+    this.entityList.forEach((entity) => {
+      const commands = entity.update(this);
       if (commands !== undefined) {
         commands.forEach(this.executeCommand, this);
       }

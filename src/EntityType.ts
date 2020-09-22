@@ -1,7 +1,7 @@
 import * as Command from './Command';
 import { GameState } from './GameState';
 
-export interface ActorType {
+export interface EntityType {
   id: string
   name: string
   description: string
@@ -10,7 +10,7 @@ export interface ActorType {
   update: (state: GameState) => Array<Command.Command>
 }
 
-export const Player: ActorType = {
+export const Player: EntityType = {
   id: 'Player',
   name: 'Player',
   description: 'This is you.',
@@ -19,7 +19,7 @@ export const Player: ActorType = {
   update: (state: GameState) => undefined
 }
 
-export const HugeHollow: ActorType = {
+export const HugeHollow: EntityType = {
   id: 'HugeHollow',
   name: 'Huge Hollow',
   description: 'It is a huge hollow. It is very scary.',
@@ -33,7 +33,7 @@ export const HugeHollow: ActorType = {
   }
 }
 
-let classes: { [id: string]:ActorType } = { };
+let classes: { [id: string]: EntityType } = {};
 classes[Player.id] = Player;
 classes[HugeHollow.id] = HugeHollow;
 

@@ -1,8 +1,8 @@
 import { GameRenderer } from './GameRenderer';
 import { GameState } from './GameState';
-import { Actor } from './Actor';
-import * as ActorType from './ActorType';
-import { ActorList } from './ActorList';
+import Entity from './Entity';
+import * as EntityType from './EntityType';
+import EntityList from './EntityList';
 import { Map } from './Map';
 import * as Keyboard from './Keyboard';
 import * as Command from './Command';
@@ -99,14 +99,14 @@ export class Game {
     this.storage.clear();
     // TODO: the map width could actually be different from the screen!
     const width = 1000,
-          height = 1000;
+      height = 1000;
     const map = new Map(width, height);
     map.genPerlin();
-    const actorList = new ActorList(width, height);
-    const player = new Actor(ActorType.Player, { x: 10, y: 10 }, 10);
-    actorList.addActor(player);
-    actorList.addActor(new Actor(ActorType.HugeHollow, { x: 12, y: 12 }, 20));
-    this.state = new GameState(map, actorList);
+    const entityList = new EntityList(width, height);
+    const player = new Entity(EntityType.Player, { x: 10, y: 10 }, 10);
+    entityList.addEntity(player);
+    entityList.addEntity(new Entity(EntityType.HugeHollow, { x: 12, y: 12 }, 20));
+    this.state = new GameState(map, entityList);
     this.updateDisplay();
     return true;
   }

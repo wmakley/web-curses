@@ -1,7 +1,7 @@
 import { WebCurses } from './WebCurses';
 import { Map, OUT_OF_BOUNDS } from './Map';
 import { TileType, getTypeById as getTileType } from './TileType';
-import { Actor } from './Actor';
+import Entity from './Entity';
 import { GameState } from './GameState';
 import * as Color from './Colors';
 
@@ -39,10 +39,10 @@ export class GameRenderer {
 
     this.curses.clear(this.bgColor);
     this.drawMap(state.map, translateX, translateY);
-    state.actorList.forEach((actor) => {
+    state.entityList.forEach((entity) => {
       // get the original tile for its background color
-      const tile = state.map.tileTypeAt(actor.pos.x, actor.pos.y);
-      this.drawActor(actor, tile, translateX, translateY);
+      const tile = state.map.tileTypeAt(entity.pos.x, entity.pos.y);
+      this.drawEntity(entity, tile, translateX, translateY);
     });
   }
 
@@ -63,10 +63,10 @@ export class GameRenderer {
     );
   }
 
-  private drawActor(actor: Actor, tile: TileType, translateX: number, translateY: number) {
-    const actorType = actor.type;
-    const x = actor.pos.x + translateX;
-    const y = actor.pos.y + translateY;
-    this.curses.putChar(actorType.char, x, y, actorType.color, tile.bgColor);
+  private drawEntity(entity: Entity, tile: TileType, translateX: number, translateY: number) {
+    const entityType = entity.type;
+    const x = entity.pos.x + translateX;
+    const y = entity.pos.y + translateY;
+    this.curses.putChar(entityType.char, x, y, entityType.color, tile.bgColor);
   }
 }
