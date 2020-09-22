@@ -1,4 +1,4 @@
-import { Actor } from './Actor';
+import Entity from './Entity';
 import { TileType } from './TileType';
 import { GameState, MovementResult } from './GameState';
 import * as Point from './Point';
@@ -11,17 +11,17 @@ export interface Command {
 
 export class PlayerMovement implements Command {
 
-  constructor(private player: Actor, private direction: Direction.Direction) {
+  constructor(private player: Entity, private direction: Direction.Direction) {
   }
 
   private oldPos: Point.Point;
 
   public toString() {
-    return "<PlayerMovement actor:Player direction:" + Direction.description(this.direction) + ">";
+    return "<PlayerMovement entity:Player direction:" + Direction.description(this.direction) + ">";
   }
 
   public execute(game: GameState) {
-    const [result, arg] = game.moveActorInDirection(this.player, this.direction);
+    const [result, arg] = game.moveEntityInDirection(this.player, this.direction);
     if (result === MovementResult.Impassable) {
       // don't end the turn, just show the message
       this.oldPos = this.player.pos;
@@ -30,7 +30,7 @@ export class PlayerMovement implements Command {
     }
     else if (result === MovementResult.Occupied) {
       this.oldPos = this.player.pos;
-      game.combat(this.player, <Actor>arg);
+      game.combat(this.player, <Entity>arg);
       game.endPlayerTurn();
     }
     else {
@@ -41,7 +41,7 @@ export class PlayerMovement implements Command {
   }
 
   public undo(game: GameState) {
-    game.unsafelyMoveActorToPoint(this.player, this.oldPos);
+    game.unsafelyMoveEntityToPoint(this.player, this.oldPos);
   }
 }
 
