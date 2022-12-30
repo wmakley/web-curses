@@ -24,10 +24,10 @@
   },
   "homepage": "https://github.com/wmakley/web-curses#readme",
   "devDependencies": {
-    "ts-loader": "^5.3.3",
+    "ts-loader": "^9.4.2",
     "typescript": "^3.3.4000",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^3.2.1"
   }
 }
